@@ -26,14 +26,15 @@
 .randomize-button {
   grid-column: 1 / 3;
   background: linear-gradient(#7474BF, #348AC7);
+  transition: filter 0.3s ease-in-out;
+}
+
+.randomize-button:active {
+  filter: brightness(70%);
 }
 
 .save-button {
   grid-column: 2 / 3;
-}
-
-.save-button:active {
-  background-color: $main-accent-color;
 }
 
 .undo-button {

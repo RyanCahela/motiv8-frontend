@@ -21,4 +21,13 @@
   font-size: 1.6rem;
   margin-left: 5px;
   padding: 10px 20px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.favorites-list-item__button:hover {
+  text-decoration: underline;
+}
+
+.favorites-list-item__button:active {
+  background-color: $dark-accent-color;
 }
