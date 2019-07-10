@@ -3,6 +3,7 @@ import fontPairings from '../fonts/fontPairings';
 import IteratorServices from '../services/IteratorServices';
 import TokenServices from'../services/TokenServices';
 import jwt from 'jsonwebtoken';
+import { API_BASE_URL } from '../config';
 
 const GlobalContext = React.createContext();
 
@@ -135,7 +136,7 @@ class GlobalContextManager extends React.Component {
       userId: userId,
     }
 
-    fetch('https://safe-citadel-61530.herokuapp.com/api/savedQuotes', {
+    fetch(`${API_BASE_URL}/savedQuotes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ class GlobalContextManager extends React.Component {
       password: userInfo.password
     }
 
-    fetch('https://safe-citadel-61530.herokuapp.com/api/users', {
+    fetch(`${API_BASE_URL}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -225,7 +226,7 @@ class GlobalContextManager extends React.Component {
       password: userInfo.password
     }
 
-    fetch('https://safe-citadel-61530.herokuapp.com/api/login', {
+    fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
@@ -260,7 +261,7 @@ class GlobalContextManager extends React.Component {
   }
 
   getUpdatedSavedQuotes(userId) {
-    fetch(`https://safe-citadel-61530.herokuapp.com/api/savedQuotes/${userId}`, {
+    fetch(`${API_BASE_URL}/savedQuotes/${userId}`, {
       headers: {
         'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
       }
@@ -275,7 +276,7 @@ class GlobalContextManager extends React.Component {
 
   handleDeleteFavoritesListItem(quoteId) {
     const data = { quoteId }
-    fetch(`https://safe-citadel-61530.herokuapp.com/api/savedQuotes/`, {
+    fetch(`${API_BASE_URL}/savedQuotes/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -328,7 +329,7 @@ class GlobalContextManager extends React.Component {
 
   getQuotes(numberOfQuotes = 30) {
     //TODO make quotes route dynamic to accept numberOfQuotes param
-    return fetch('https://safe-citadel-61530.herokuapp.com/api/quotes')
+    return fetch(`${API_BASE_URL}/quotes`)
     .then(quotes => quotes.json())
     .then(quotes => {
       return new Promise((resolve) => {
