@@ -31,35 +31,25 @@ class GlobalContextManager extends React.Component {
       userId: 0,
       savedQuotes: []
     }
-
-    this.handleRandomize = this.handleRandomize.bind(this);
-    this.handleUndo = this.handleUndo.bind(this);
-    this.handleCheckboxCheck = this.handleCheckboxCheck.bind(this);
-    this.handleSaveQuote = this.handleSaveQuote.bind(this);
-    this.handleFavoritesListItemClick = this.handleFavoritesListItemClick.bind(this);
-
-    //user info methods
-    this.handleCreateAccountSubmit = this.handleCreateAccountSubmit.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-    this.getUpdatedSavedQuotes = this.getUpdatedSavedQuotes.bind(this);
-    this.handleDeleteFavoritesListItem = this.handleDeleteFavoritesListItem.bind(this);
   }
 
   //APP METHODS
   componentDidMount() {
     this.initializeApp();
     const isLoggedIn = TokenServices.getTokenByKey('motiv8-jwt');
-    if(isLoggedIn) {
+    console.log(isLoggedIn);
+    if (isLoggedIn) {
       const {
-        sub: username,
-        userId,
-      } = jwt.decode(isLoggedIn);
+        header,
+        payload,
+      } = jwt.decode(isLoggedIn, {complete: true});
+      console.log('header', header);
+      console.log('payload', payload);
       
       this.setState({
         isLoggedIn: true,
-        username: username,
-        userId: userId
+        userId: payload.userId,
+        username: payload.sub
       })
     }
 
@@ -78,9 +68,8 @@ class GlobalContextManager extends React.Component {
   }
   //END APP METHODS
 
-  
   //QUOTE METHODS
-  handleRandomize() {
+  handleRandomize = () => {
     if(!this.state.keepBackground) {
       this.iterateBackgroundUrl(this.backgroundUrlItObj.next());
     }
@@ -92,7 +81,7 @@ class GlobalContextManager extends React.Component {
     }
   }
   
-  handleUndo() {
+  handleUndo = () => {
     if(!this.state.keepBackground) {
       this.setState((currentState) => {
         return {
@@ -121,7 +110,7 @@ class GlobalContextManager extends React.Component {
     }
   }
 
-  handleSaveQuote(userId, getUpdatedSavedQuotes) {
+  handleSaveQuote = (userId, getUpdatedSavedQuotes) => {
     //TODO sends current quote config to favorites db table.
 
     if(userId === 0) {
@@ -149,8 +138,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-
-  handleCheckboxCheck(e) {
+  handleCheckboxCheck = (e) => {
     switch(e.target.id) {
       case 'keep-quote-checkbox':
         this.setState((currentState) => {
@@ -177,7 +165,7 @@ class GlobalContextManager extends React.Component {
     }
   }
 
-  handleFavoritesListItemClick(quote, history) {
+  handleFavoritesListItemClick = (quote, history) => {
     this.setState({
       currentQuote: quote,
       backgroundImageUrl: quote.backgroundimageurl,
@@ -193,7 +181,7 @@ class GlobalContextManager extends React.Component {
 
   //USER METHODS
 
-  handleCreateAccountSubmit(e, userInfo) {
+  handleCreateAccountSubmit = (e, userInfo) => {
     e.preventDefault();
     const data = {
       username: userInfo.username,
@@ -217,7 +205,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-  handleLogin(e, userInfo) {
+  handleLogin = (e, userInfo) => {
     if(e) {
       e.preventDefault();
     }
@@ -239,7 +227,8 @@ class GlobalContextManager extends React.Component {
       let decodedToken = jwt.decode(res.authToken);
       
       TokenServices.setToken('motiv8-jwt', res.authToken);
-      this.setState({
+      console.log(decodedToken);
+        this.setState({
         isLoggedIn: true,
         username: decodedToken.sub,
         userId: decodedToken.userId,
@@ -250,7 +239,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-  handleLogout() {
+  handleLogout = () => {
     TokenServices.removeTokenByKey('motiv8-jwt');
     this.setState({
       isLoggedIn: false,
@@ -260,7 +249,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-  getUpdatedSavedQuotes(userId) {
+  getUpdatedSavedQuotes = (userId) => {
     fetch(`${API_BASE_URL}/savedQuotes/${userId}`, {
       headers: {
         'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
@@ -274,7 +263,7 @@ class GlobalContextManager extends React.Component {
       })
   }
 
-  handleDeleteFavoritesListItem(quoteId) {
+  handleDeleteFavoritesListItem = (quoteId) => {
     const data = { quoteId }
     fetch(`${API_BASE_URL}/savedQuotes/`, {
       method: 'DELETE',
@@ -391,9 +380,7 @@ class GlobalContextManager extends React.Component {
   }
   //END HELPER FUNCTIONS
 
-
   render() {
-
     const globalContext = {
       state: this.state,
       methods: {
@@ -409,8 +396,7 @@ class GlobalContextManager extends React.Component {
         handleDeleteFavoritesListItem: this.handleDeleteFavoritesListItem
       }
     }
-
-        
+  
     return (
       <GlobalContext.Provider value={globalContext}>
         {this.props.children}
@@ -418,4 +404,5 @@ class GlobalContextManager extends React.Component {
     );
   }
 }
+
 export { GlobalContext , GlobalContextManager };
