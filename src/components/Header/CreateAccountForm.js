@@ -45,7 +45,7 @@ export default class CreateAccountForm extends Component {
                 className="create-account-form" 
                 onSubmit={(e) => {
                   methods.createAccount(e, this.state);
-                  this.props.setIsInCreateAccountModeFalse();
+                  this.props.setInCreateAccountMode(false);
                 }}>
 
                 <label className="create-account-form__label" htmlFor="username-input">Username</label>

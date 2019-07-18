@@ -37,7 +37,16 @@
   grid-column: 2 / 3;
 }
 
+.save-success {
+  background-color: #43A047;
+  pointer-events: none;
+}
 .undo-button {
   grid-column: 1 / 2;
+}
+
+.undo-disabled {
+  background-color: grey;
+  pointer-events: none;
 }
 

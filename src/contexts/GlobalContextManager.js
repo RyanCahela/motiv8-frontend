@@ -19,6 +19,7 @@ class GlobalContextManager extends React.Component {
       currentQuote: {},
       currentQuoteBgImageUrl: '',
       currentQuoteFontPair: {},
+      currentQuoteSaved: false,
 
       prevQuote: {},
       prevQuoteBgImageUrl: '',
@@ -76,6 +77,9 @@ class GlobalContextManager extends React.Component {
 
   //QUOTE METHODS
   randomizeQuote = () => {
+    this.setState({
+      currentQuoteSaved: false
+    })
     if(!this.state.keepBackground) {
       this.iterateBackgroundUrl(this.backgroundUrlItObj.next());
     }
@@ -124,10 +128,10 @@ class GlobalContextManager extends React.Component {
     }
 
     const data = {
-      currentQuoteBgImageUrl: this.state.currentQuoteBgImageUrl,
+      backgroundImageUrl: this.state.currentQuoteBgImageUrl,
       quoteId: this.state.currentQuote.id,
-      bodyFont: this.state.fontPair.body,
-      authorFont: this.state.fontPair.author,
+      bodyFont: this.state.currentQuoteFontPair.body,
+      authorFont: this.state.currentQuoteFontPair.author,
       userId: userId,
     }
 
@@ -140,7 +144,10 @@ class GlobalContextManager extends React.Component {
       body: JSON.stringify(data)
     })
     .then(res => {
-      getUpdatedSavedQuotes(userId);
+      if(res.ok) {
+        getUpdatedSavedQuotes(userId);
+        this.setState({currentQuoteSaved: true })
+      }
     })
   }
 
@@ -208,7 +215,7 @@ class GlobalContextManager extends React.Component {
       }
     })
     .then(resJson => {
-      this.handleLogin(null, data);
+      this.loginUser(null, data);
     })
   }
 

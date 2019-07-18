@@ -9,8 +9,17 @@ export default function QuoteNav() {
         return (
           <div className="quote-nav-container">
             <button className="quote-nav__button randomize-button" onClick={() => methods.randomizeQuote()}>Randomize</button>
-            <button className="quote-nav__button undo-button" onClick={() => methods.undoRandomizeQuote()}>Undo</button>
-            <button className="quote-nav__button save-button" onClick={() => methods.saveQuote(state.userId, methods.getUpdatedSavedQuotes)}>Save</button>
+            <button
+              disabled={state.prevQuote.quote ? false : 'disabled'}
+              className={`quote-nav__button undo-button ${state.prevQuote.quote ? '' : 'undo-disabled'}`} 
+              onClick={() => methods.undoRandomizeQuote()}>
+                Undo
+            </button>
+            <button 
+              className={`quote-nav__button save-button ${state.currentQuoteSaved ? 'save-success' : ''}`} 
+              onClick={() => methods.saveQuote(state.userId, methods.getUpdatedSavedQuotes)}>
+                Save
+            </button>
           </div>
         )
       }}
