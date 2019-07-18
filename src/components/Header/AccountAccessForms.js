@@ -10,17 +10,16 @@ export default class AccountAccessForms extends React.Component {
       isInCreateAccountMode: false
     }
 
-    this.setIsInCreateAccountModeFalse = this.setIsInCreateAccountModeFalse.bind(this);
   }
 
 
-  setIsInCreateAccountModeTrue() {
+  setIsInCreateAccountModeTrue = () => {
     this.setState({
       isInCreateAccountMode: true
     })
   }
 
-  setIsInCreateAccountModeFalse() {
+  setIsInCreateAccountModeFalse = () => {
     this.setState({
       isInCreateAccountMode: false
     })
@@ -44,7 +43,7 @@ export default class AccountAccessForms extends React.Component {
           <button className={`account-access-forms__button ${signInBg}`} onClick={() => this.setIsInCreateAccountModeFalse()}>Sign In</button>
           <button className={`account-access-forms__button ${createAccountBg}`} onClick={() => this.setIsInCreateAccountModeTrue()}>Create Account</button>
           <div className="account-access-forms__selected-form">
-            {this.state.isInCreateAccountMode? 
+            {this.state.isInCreateAccountMode ? 
               <CreateAccountForm setIsInCreateAccountModeFalse={this.setIsInCreateAccountModeFalse}/>
               :
               <LoginForm />}

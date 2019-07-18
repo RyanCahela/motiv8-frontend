@@ -23,39 +23,28 @@ export default class Menu extends React.Component {
     })
   }
   
-
   render() {
     return (
       <GlobalContext.Consumer>
-        {({ state }) => {
-          if(this.state.menuIsOpen) {
+        {({ state, methods }) => {
             return (
               <div className="menu-container">
                 <header className="menu">
-                  <button className="menu__button" onClick={this.toggleMenuIsOpen}>X</button>
+                  <button className="menu__button" onClick={methods.toggleMenuIsOpen}>
+                    <span>{ state.menuIsOpen ? 'X' : 'Menu' }</span>
+                  </button>
                   <div className="menu__greeting">
-                    { state.userIsLoggedIn? `Welcome ${state.username}`: ''}
+                    { state.userIsLoggedIn ? `Welcome ${state.username}`: ''}
                   </div>
-                  { state.userIsLoggedIn ? 
-                      <UserMenu toggleMenuIsOpen={this.toggleMenuIsOpen}/> 
-                      : 
-                      <AccountAccessForms />
-                  }
+                    { state.menuIsOpen ? 
+                        state.userIsLoggedIn ? <UserMenu /> : <AccountAccessForms />
+                        :
+                        ''
+                    }
                 </header>
               </div>
             )
           }
-          else {
-            return (
-              <div className="menu-container">
-                <header className="menu">
-                  <button className="menu__button" onClick={this.toggleMenuIsOpen}>Menu</button>
-                  <div className="menu__greeting">{state.userIsLoggedIn? `Welcome ${state.username}`: ''}</div>
-                </header>
-              </div>
-            )
-          }
-        }
         }
       </GlobalContext.Consumer>
     )

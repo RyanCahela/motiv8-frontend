@@ -12,7 +12,6 @@ class GlobalContextManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //quote info
       quotes: [],
       quoteBackgroundImageUrls: [],
       quoteFontPairings: [...quoteFontPairings],
@@ -29,11 +28,12 @@ class GlobalContextManager extends React.Component {
       keepQuoteFonts: false,
       keepQuoteQuote: false,
 
-      //user info
       userIsLoggedIn: false,
       username: '',
       userId: 0,
-      savedQuotes: []
+      savedQuotes: [],
+
+      menuIsOpen: false,
     }
   }
 
@@ -61,6 +61,7 @@ class GlobalContextManager extends React.Component {
   }
 
   initializeApp() {
+    console.log("initializeApp ran");
     let getImages = this.getBackgroundImages(30);
     let getQuotes = this.getQuotes(30);
     
@@ -236,12 +237,12 @@ class GlobalContextManager extends React.Component {
       TokenServices.setToken('motiv8-jwt', res.authToken);
       console.log(decodedToken);
         this.setState({
-        isLoggedIn: true,
+        userIsLoggedIn: true,
         username: decodedToken.sub,
         userId: decodedToken.userId,
-        savedQuotes: res.savedQuotes
+        savedQuotes: res.savedQuotes,
+        menuIsOpen: false
       })
-
       
     })
   }
@@ -249,10 +250,11 @@ class GlobalContextManager extends React.Component {
   logoutUser = () => {
     TokenServices.removeTokenByKey('motiv8-jwt');
     this.setState({
-      isLoggedIn: false,
+      userIsLoggedIn: false,
       userId: 0,
       username: '',
-      savedQuotes: []
+      savedQuotes: [],
+      menuIsOpen: false
     })
   }
 
@@ -299,9 +301,16 @@ class GlobalContextManager extends React.Component {
     })
   }
   //END USER METHODS
+
+  toggleMenuIsOpen = () => {
+    this.setState((currentState) => {
+      return {
+        menuIsOpen: !currentState.menuIsOpen
+      }
+    })
+  }
   
   //HELPER FUNCTIONS
-
   getBackgroundImages(numberOfImages = 30) {
     return fetch(`https://api.unsplash.com/photos/random?count=${numberOfImages}`, {
       headers: {
@@ -400,7 +409,8 @@ class GlobalContextManager extends React.Component {
         loginUser: this.loginUser,
         logoutUser: this.logoutUser,
         getUpdatedSavedQuotes: this.getUpdatedSavedQuotes,
-        deleteFavoritesItem: this.deleteFavoritesItem
+        deleteFavoritesItem: this.deleteFavoritesItem,
+        toggleMenuIsOpen: this.toggleMenuIsOpen
       }
     }
   

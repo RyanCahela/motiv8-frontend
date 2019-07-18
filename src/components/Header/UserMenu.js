@@ -13,7 +13,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={`/user/${state.username}`} 
-                onClick={() => props.toggleMenuIsOpen()}
+                onClick={() => methods.toggleMenuIsOpen()}
               >
                 <li className="user-menu__list-item">
                   Profile
@@ -22,7 +22,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={'/quotes'} 
-                onClick={() => props.toggleMenuIsOpen()}
+                onClick={() => methods.toggleMenuIsOpen()}
               >
                 <li className="user-menu__list-item">
                   Quote Generator

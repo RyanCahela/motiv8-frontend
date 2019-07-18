@@ -6,19 +6,17 @@ export default function FavoritesList({ history }) {
   return (
     <GlobalContext.Consumer>
       {({ state }) => {
-
-        let favoritesList = state.savedQuotes.map((quote) => {
-          return (
-            <FavoritesListItem key={quote.id} quote={quote} history={history} savedQuoteId={quote.id}/>
-          )
-        })
-
         return (
           <>
-          <h3 className="favorites-list-heading">Favorites</h3>
-          <ul className="favorites-list">
-            { favoritesList }
-          </ul>
+            <h3 className="favorites-list-heading">Favorites</h3>
+            <ul className="favorites-list">
+              { state.savedQuotes.map(quote => 
+                <FavoritesListItem 
+                  key={quote.id} 
+                  quote={quote} 
+                  history={history} 
+                  savedQuoteId={quote.id}/>) }
+            </ul>
           </>
         )
       }}
