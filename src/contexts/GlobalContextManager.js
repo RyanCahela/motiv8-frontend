@@ -207,7 +207,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-  handleLogin = (e, userInfo) => {
+  loginUser = (e, userInfo) => {
     if(e) e.preventDefault();
     const data = {
       username: userInfo.username,
@@ -242,7 +242,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-  handleLogout = () => {
+  logoutUser = () => {
     TokenServices.removeTokenByKey('motiv8-jwt');
     this.setState({
       isLoggedIn: false,
@@ -393,8 +393,8 @@ class GlobalContextManager extends React.Component {
         saveQuote: this.saveQuote,
         editFavoritesItem: this.editFavoritesItem,
         createAccount: this.createAccount,
-        handleLogin: this.handleLogin,
-        handleLogout: this.handleLogout,
+        loginUser: this.loginUser,
+        logoutUser: this.logoutUser,
         getUpdatedSavedQuotes: this.getUpdatedSavedQuotes,
         deleteFavoritesItem: this.deleteFavoritesItem
       }

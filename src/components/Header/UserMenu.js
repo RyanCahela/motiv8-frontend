@@ -31,7 +31,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={'/'} 
-                onClick={() => methods.handleLogout()}
+                onClick={() => methods.logoutUser()}
               >
                 <li className="user-menu__list-item">
                   Log Out
