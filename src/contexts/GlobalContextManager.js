@@ -36,13 +36,14 @@ class GlobalContextManager extends React.Component {
   //APP METHODS
   componentDidMount() {
     this.initializeApp();
-    const isLoggedIn = TokenServices.getTokenByKey('motiv8-jwt');
-    console.log(isLoggedIn);
-    if (isLoggedIn) {
+    const localToken = jwt.decode(TokenServices.getTokenByKey('motiv8-jwt'), {complete: true});
+    console.log(localToken);
+    
+    if (localToken) {
       const {
         header,
         payload,
-      } = jwt.decode(isLoggedIn, {complete: true});
+      } = localToken;
       console.log('header', header);
       console.log('payload', payload);
       
@@ -62,7 +63,7 @@ class GlobalContextManager extends React.Component {
     Promise.all([ getQuotes, getImages ])
       .then(values => {
         this.fontPairItObj = IteratorServices.createIterator(this.state.fontPairings);
-        this.handleRandomize();
+        this.handleRandomizeQuote();
       })
       .catch(err => console.log(err));
   }
@@ -166,7 +167,7 @@ class GlobalContextManager extends React.Component {
     }
   }
 
-  handleFavoritesListItemClick = (quote, history) => {
+  editFavoritesItem = (quote, history) => {
     this.setState({
       currentQuote: quote,
       backgroundImageUrl: quote.backgroundimageurl,
@@ -182,7 +183,7 @@ class GlobalContextManager extends React.Component {
 
   //USER METHODS
 
-  handleCreateAccountSubmit = (e, userInfo) => {
+  createAccount = (e, userInfo) => {
     e.preventDefault();
     const data = {
       username: userInfo.username,
@@ -215,10 +216,18 @@ class GlobalContextManager extends React.Component {
 
     fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(data)
     })
     .then(res => res.json())
     .then(res => {
+
+      if(res.error) {
+        console.log('error', res.error);
+        return;
+      }
       let decodedToken = jwt.decode(res.authToken);
       TokenServices.setToken('motiv8-jwt', res.authToken);
       console.log(decodedToken);
@@ -257,7 +266,7 @@ class GlobalContextManager extends React.Component {
       })
   }
 
-  handleDeleteFavoritesListItem = (quoteId) => {
+  deleteFavoritesItem = (quoteId) => {
     const data = { quoteId }
     fetch(`${API_BASE_URL}/savedQuotes/`, {
       method: 'DELETE',
@@ -382,12 +391,12 @@ class GlobalContextManager extends React.Component {
         randomizeQuote: this.randomizeQuote,
         undoRandomizeQuote: this.undoRandomizeQuote,
         saveQuote: this.saveQuote,
-        handleFavoritesListItemClick: this.handleFavoritesListItemClick,
-        handleCreateAccountSubmit: this.handleCreateAccountSubmit,
+        editFavoritesItem: this.editFavoritesItem,
+        createAccount: this.createAccount,
         handleLogin: this.handleLogin,
         handleLogout: this.handleLogout,
         getUpdatedSavedQuotes: this.getUpdatedSavedQuotes,
-        handleDeleteFavoritesListItem: this.handleDeleteFavoritesListItem
+        deleteFavoritesItem: this.deleteFavoritesItem
       }
     }
   
