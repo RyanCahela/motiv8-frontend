@@ -8,9 +8,9 @@ export default function QuoteNav() {
       {({ methods, state }) => {
         return (
           <div className="quote-nav-container">
-            <button className="quote-nav__button randomize-button" onClick={() => methods.handleRandomize()}>Randomize</button>
-            <button className="quote-nav__button undo-button" onClick={() => methods.handleUndo()}>Undo</button>
-            <button className="quote-nav__button save-button" onClick={() => methods.handleSaveQuote(state.userId, methods.getUpdatedSavedQuotes)}>Save</button>
+            <button className="quote-nav__button randomize-button" onClick={() => methods.randomizeQuote()}>Randomize</button>
+            <button className="quote-nav__button undo-button" onClick={() => methods.undoRandomizeQuote()}>Undo</button>
+            <button className="quote-nav__button save-button" onClick={() => methods.saveQuote(state.userId, methods.getUpdatedSavedQuotes)}>Save</button>
           </div>
         )
       }}

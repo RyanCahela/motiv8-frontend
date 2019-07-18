@@ -69,7 +69,7 @@ class GlobalContextManager extends React.Component {
   //END APP METHODS
 
   //QUOTE METHODS
-  handleRandomize = () => {
+  randomizeQuote = () => {
     if(!this.state.keepBackground) {
       this.iterateBackgroundUrl(this.backgroundUrlItObj.next());
     }
@@ -81,7 +81,7 @@ class GlobalContextManager extends React.Component {
     }
   }
   
-  handleUndo = () => {
+  undoRandomizeQuote = () => {
     if(!this.state.keepBackground) {
       this.setState((currentState) => {
         return {
@@ -110,7 +110,7 @@ class GlobalContextManager extends React.Component {
     }
   }
 
-  handleSaveQuote = (userId, getUpdatedSavedQuotes) => {
+  saveQuote = (userId, getUpdatedSavedQuotes) => {
     //TODO sends current quote config to favorites db table.
 
     if(userId === 0) {
@@ -138,6 +138,7 @@ class GlobalContextManager extends React.Component {
     })
   }
 
+  //refactor out to 3 different toggle functions
   handleCheckboxCheck = (e) => {
     switch(e.target.id) {
       case 'keep-quote-checkbox':
@@ -206,9 +207,7 @@ class GlobalContextManager extends React.Component {
   }
 
   handleLogin = (e, userInfo) => {
-    if(e) {
-      e.preventDefault();
-    }
+    if(e) e.preventDefault();
     const data = {
       username: userInfo.username,
       password: userInfo.password
@@ -216,16 +215,11 @@ class GlobalContextManager extends React.Component {
 
     fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
       body: JSON.stringify(data)
     })
     .then(res => res.json())
     .then(res => {
-      //TODO build token services for crud on tokens to refresh
       let decodedToken = jwt.decode(res.authToken);
-      
       TokenServices.setToken('motiv8-jwt', res.authToken);
       console.log(decodedToken);
         this.setState({
@@ -385,9 +379,9 @@ class GlobalContextManager extends React.Component {
       state: this.state,
       methods: {
         handleCheckboxCheck: this.handleCheckboxCheck,
-        handleRandomize: this.handleRandomize,
-        handleUndo: this.handleUndo,
-        handleSaveQuote: this.handleSaveQuote,
+        randomizeQuote: this.randomizeQuote,
+        undoRandomizeQuote: this.undoRandomizeQuote,
+        saveQuote: this.saveQuote,
         handleFavoritesListItemClick: this.handleFavoritesListItemClick,
         handleCreateAccountSubmit: this.handleCreateAccountSubmit,
         handleLogin: this.handleLogin,
