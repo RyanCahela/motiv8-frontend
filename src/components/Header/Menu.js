@@ -34,9 +34,9 @@ export default class Menu extends React.Component {
                 <header className="menu">
                   <button className="menu__button" onClick={this.toggleMenuIsOpen}>X</button>
                   <div className="menu__greeting">
-                    { state.isLoggedIn? `Welcome ${state.username}`: ''}
+                    { state.userIsLoggedIn? `Welcome ${state.username}`: ''}
                   </div>
-                  { state.isLoggedIn ? 
+                  { state.userIsLoggedIn ? 
                       <UserMenu toggleMenuIsOpen={this.toggleMenuIsOpen}/> 
                       : 
                       <AccountAccessForms />
@@ -50,7 +50,7 @@ export default class Menu extends React.Component {
               <div className="menu-container">
                 <header className="menu">
                   <button className="menu__button" onClick={this.toggleMenuIsOpen}>Menu</button>
-                  <div className="menu__greeting">{state.isLoggedIn? `Welcome ${state.username}`: ''}</div>
+                  <div className="menu__greeting">{state.userIsLoggedIn? `Welcome ${state.username}`: ''}</div>
                 </header>
               </div>
             )

@@ -1,4 +1,4 @@
-const fontPairings = [
+const quoteFontPairings = [
   {
     body: 'Playfair Display, serif',
     author: 'Source Sans Pro, sans-serif'
@@ -21,7 +21,7 @@ const fontPairings = [
   }
 ]
 
-export default fontPairings;
+export default quoteFontPairings;
 
 // font-family: 'Source Sans Pro', sans-serif;
 // font-family: 'Playfair Display', serif;

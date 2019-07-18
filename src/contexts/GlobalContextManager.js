@@ -1,5 +1,5 @@
 import React from 'react';
-import fontPairings from '../fonts/fontPairings';
+import quoteFontPairings from '../fonts/quoteFontPairings';
 import IteratorServices from '../services/IteratorServices';
 import TokenServices from'../services/TokenServices';
 import jwt from 'jsonwebtoken';
@@ -14,19 +14,23 @@ class GlobalContextManager extends React.Component {
     this.state = {
       //quote info
       quotes: [],
-      currentQuote: '',
-      backgroundImageUrls: [],
-      fontPairings: [...fontPairings],
-      backgroundImageUrl: '',
-      fontPair: {},
-      previousBackgroundImageUrl: '',
-      previousFontPair: {},
-      keepBackground: false,
-      keepFonts: false,
-      keepQuote: false,
+      quoteBackgroundImageUrls: [],
+      quoteFontPairings: [...quoteFontPairings],
+
+      currentQuote: {},
+      currentQuoteBgImageUrl: '',
+      currentQuoteFontPair: {},
+
+      prevQuote: {},
+      prevQuoteBgImageUrl: '',
+      prevQuoteFontPair: {},
+
+      keepQuoteBackground: false,
+      keepQuoteFonts: false,
+      keepQuoteQuote: false,
 
       //user info
-      isLoggedIn: false,
+      userIsLoggedIn: false,
       username: '',
       userId: 0,
       savedQuotes: []
@@ -48,7 +52,7 @@ class GlobalContextManager extends React.Component {
       console.log('payload', payload);
       
       this.setState({
-        isLoggedIn: true,
+        userIsLoggedIn: true,
         userId: payload.userId,
         username: payload.sub
       })
@@ -62,8 +66,8 @@ class GlobalContextManager extends React.Component {
     
     Promise.all([ getQuotes, getImages ])
       .then(values => {
-        this.fontPairItObj = IteratorServices.createIterator(this.state.fontPairings);
-        this.handleRandomizeQuote();
+        this.fontPairItObj = IteratorServices.createIterator(this.state.quoteFontPairings);
+        this.randomizeQuote();
       })
       .catch(err => console.log(err));
   }
@@ -86,8 +90,8 @@ class GlobalContextManager extends React.Component {
     if(!this.state.keepBackground) {
       this.setState((currentState) => {
         return {
-          backgroundImageUrl: currentState.previousBackgroundImageUrl,
-          previousBackgroundImageUrl: currentState.backgroundImageUrl
+          currentQuoteBgImageUrl: currentState.prevQuoteBgImageUrl,
+          prevQuoteBgImageUrl: currentState.currentQuoteBgImageUrl
         }
       })
     }
@@ -96,7 +100,7 @@ class GlobalContextManager extends React.Component {
       this.setState((currentState) => {
         return {
           fontPair: currentState.previousFontPair,
-          previousFontPair: currentState.fontPair
+          prevFontPair: currentState.fontPair
         }
       })
     }
@@ -104,8 +108,8 @@ class GlobalContextManager extends React.Component {
     if(!this.state.keepQuote) {
       this.setState((currentState) => {
         return {
-          currentQuote: currentState.previousQuote,
-          previousQuote: currentState.currentQuote
+          currentQuote: currentState.prevQuote,
+          prevQuote: currentState.currentQuote
         }
       })
     }
@@ -119,7 +123,7 @@ class GlobalContextManager extends React.Component {
     }
 
     const data = {
-      backgroundImageUrl: this.state.backgroundImageUrl,
+      currentQuoteBgImageUrl: this.state.currentQuoteBgImageUrl,
       quoteId: this.state.currentQuote.id,
       bodyFont: this.state.fontPair.body,
       authorFont: this.state.fontPair.author,
@@ -170,7 +174,7 @@ class GlobalContextManager extends React.Component {
   editFavoritesItem = (quote, history) => {
     this.setState({
       currentQuote: quote,
-      backgroundImageUrl: quote.backgroundimageurl,
+      currentQuoteBgImageUrl: quote.backgroundimageurl,
       keepBackground: false,
       keepFonts: false,
       keepQuote: false
@@ -308,11 +312,11 @@ class GlobalContextManager extends React.Component {
     .then(resJson => {
       return new Promise((resolve) => {
         this.setState({
-          backgroundImageUrls: resJson,
+          quoteBackgroundImageUrls: resJson,
         },
         //runs after setState
         () => {
-          this.backgroundUrlItObj = IteratorServices.createIterator(this.state.backgroundImageUrls);
+          this.backgroundUrlItObj = IteratorServices.createIterator(this.state.quoteBackgroundImageUrls);
           resolve("backgroundUrlItObj Created");
         })
       })
@@ -341,8 +345,8 @@ class GlobalContextManager extends React.Component {
     if(!done) {
       this.setState((currentState) => {
         return {
-          backgroundImageUrl: value.urls.regular,
-          previousBackgroundImageUrl: currentState.backgroundImageUrl
+          currentQuoteBgImageUrl: value.urls.regular,
+          prevQuoteBgImageUrl: currentState.currentQuoteBgImageUrl
         }
       })
     }
@@ -356,14 +360,14 @@ class GlobalContextManager extends React.Component {
     if(!done) {
       this.setState((currentState) => {
         return {
-          fontPair: value,
-          previousFontPair: currentState.fontPair 
+          currentQuoteFontPair: value,
+          prevQuoteFontPair: currentState.fontPair 
         }
       })
     }
     else {
       //if iterator done create new iterator then call the first value on it.
-      this.fontPairItObj = IteratorServices.createIterator(this.state.fontPairings);
+      this.fontPairItObj = IteratorServices.createIterator(this.state.quoteFontPairings);
       this.iterateFontPairing(this.fontPairItObj.next());
     }
   }
@@ -373,7 +377,7 @@ class GlobalContextManager extends React.Component {
       this.setState(currentState => {
         return {
           currentQuote: value,
-          previousQuote: currentState.currentQuote
+          prevQuote: currentState.currentQuote
         }
       })
     }

@@ -13,15 +13,15 @@ export default class QuoteDisplay extends React.Component {
           const dynamicBackgroundStyles = {
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
-            backgroundImage: `url(${state.backgroundImageUrl})`,
+            backgroundImage: `url(${state.currentQuoteBgImageUrl})`,
           }
 
           const dynamicBodyFont = {
-            fontFamily: state.fontPair['body']
+            fontFamily: state.currentQuoteFontPair['body']
           }
       
           const dynamicAuthorFont = {
-            fontFamily: state.fontPair['author']
+            fontFamily: state.currentQuoteFontPair['author']
           }
 
           return (
