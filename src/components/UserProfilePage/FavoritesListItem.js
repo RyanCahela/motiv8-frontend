@@ -14,7 +14,6 @@ export default function FavoritesListItem(props) {
           fontFamily: props.quote.authorfont,
         }
 
-
         return (
           <li className="favorites-list-item">
             <div>

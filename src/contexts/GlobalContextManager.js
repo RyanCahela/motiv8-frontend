@@ -77,6 +77,7 @@ class GlobalContextManager extends React.Component {
 
   //QUOTE METHODS
   randomizeQuote = () => {
+    console.log(this.state.quotes);
     this.setState({
       currentQuoteSaved: false
     })
@@ -194,7 +195,6 @@ class GlobalContextManager extends React.Component {
 
 
   //USER METHODS
-
   createAccount = (e, userInfo) => {
     e.preventDefault();
     const data = {

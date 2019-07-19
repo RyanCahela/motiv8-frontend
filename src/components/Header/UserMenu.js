@@ -30,7 +30,7 @@ export default function UserMenu(props) {
               </NavLink>
               <NavLink 
                 className="user-menu__list-item__link" 
-                to={'/'} 
+                to={'/quotes'} 
                 onClick={() => methods.logoutUser()}
               >
                 <li className="user-menu__list-item">
