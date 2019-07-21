@@ -26,7 +26,7 @@ export default function FavoritesListItem(props) {
                 className="favorites-list-item__button" 
                 onClick={() => methods.deleteFavoritesItem(props.savedQuoteId)}>Delete</button>
             </div>
-            <img className="favorites-list-item-img" alt='' src={props.quote.backgroundimageurl}></img>
+            <img className="favorites-list-item-img" alt='' src={props.quote.background_image_url}></img>
           </li>
         )
       }}
