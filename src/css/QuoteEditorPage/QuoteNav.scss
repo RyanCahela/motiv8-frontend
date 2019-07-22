@@ -37,6 +37,10 @@
   grid-column: 2 / 3;
 }
 
+.save-button__instructions {
+  font-size: $m-font-size;
+}
+
 .save-success {
   background-color: #43A047;
   pointer-events: none;
@@ -45,7 +49,7 @@
   grid-column: 1 / 2;
 }
 
-.undo-disabled {
+.button-disabled {
   background-color: grey;
   pointer-events: none;
 }

@@ -24,6 +24,7 @@ class GlobalContextManager extends React.Component {
       prevQuote: {},
       prevQuoteBgImageUrl: '',
       prevQuoteFontPair: {},
+      quoteHistory: [],
 
       keepQuoteBackground: false,
       keepQuoteFonts: false,

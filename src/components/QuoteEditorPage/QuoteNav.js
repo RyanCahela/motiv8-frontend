@@ -6,19 +6,42 @@ export default function QuoteNav() {
   return (
     <GlobalContext.Consumer>
       {({ methods, state }) => {
+
+        let {
+          currentQuoteSaved,
+          userIsLoggedIn,
+          prevQuote,
+          userId
+        } = state
+
+        let {
+          getUpdatedSavedQuotes
+        } = methods
+
+
         return (
           <div className="quote-nav-container">
             <button className="quote-nav__button randomize-button" onClick={() => methods.randomizeQuote()}>Randomize</button>
             <button
-              disabled={state.prevQuote.quote ? false : 'disabled'}
-              className={`quote-nav__button undo-button ${state.prevQuote.quote ? '' : 'undo-disabled'}`} 
+              disabled={prevQuote.quote ? false : 'disabled'}
+              className={`quote-nav__button undo-button ${prevQuote.quote ? '' : 'button-disabled'}`} 
               onClick={() => methods.undoRandomizeQuote()}>
                 Undo
             </button>
             <button 
-              className={`quote-nav__button save-button ${state.currentQuoteSaved ? 'save-success' : ''}`} 
-              onClick={() => methods.saveQuote(state.userId, methods.getUpdatedSavedQuotes)}>
+              disabled={userIsLoggedIn ? false : 'disabled'}
+              className={
+                `quote-nav__button save-button 
+                ${currentQuoteSaved ? 'save-success' : ''}
+                ${userIsLoggedIn ? '' : 'button-disabled'}`
+              } 
+              onClick={() => methods.saveQuote(userId, getUpdatedSavedQuotes)}
+              >
                 Save
+              {userIsLoggedIn
+                ? ''
+                : <div class="save-button__instructions">Log in to save quotes</div>
+              }
             </button>
           </div>
         )
