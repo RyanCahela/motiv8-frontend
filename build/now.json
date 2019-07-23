@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "alias": "ryan-cahela-motiv8",
+  "name": "motiv8",
+  "routes": [
+    {
+      "src": "^/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": ".*",
+      "dest": "/index.html"
+    }
+  ]
+}

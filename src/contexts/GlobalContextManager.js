@@ -43,7 +43,6 @@ class GlobalContextManager extends React.Component {
   componentDidMount() {
     this.initializeApp();
     const localToken = jwt.decode(TokenServices.getTokenByKey('motiv8-jwt'), {complete: true});
-    console.log(localToken);
     
     if (localToken) {
       const {
@@ -63,7 +62,6 @@ class GlobalContextManager extends React.Component {
   }
 
   initializeApp() {
-    console.log("initializeApp ran");
     let getImages = this.getBackgroundImages(30);
     let getQuotes = this.getQuotes(30);
     
@@ -78,7 +76,6 @@ class GlobalContextManager extends React.Component {
 
   //QUOTE METHODS
   randomizeQuote = () => {
-    console.log(this.state.quotes);
     this.setState({
       currentQuoteSaved: false
     })
@@ -295,7 +292,7 @@ class GlobalContextManager extends React.Component {
         this.setState((currentState) => {
           let newSavedQuotes = currentState.savedQuotes.filter((savedQuote) => {
             if(savedQuote.id === quoteId) {
-              return;
+              return false;
             }
             else {
               return savedQuote

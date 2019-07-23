@@ -40,7 +40,7 @@ export default function QuoteNav() {
                 Save
               {userIsLoggedIn
                 ? ''
-                : <div class="save-button__instructions">Log in to save quotes</div>
+                : <div className="save-button__instructions">Log in to save quotes</div>
               }
             </button>
           </div>
