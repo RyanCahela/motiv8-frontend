@@ -11,5 +11,10 @@
       "src": ".*",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "REACT_APP_API_KEY": "637ad8107185907a6e559449be25e4c6fb9429f66f500149003592bbf8bf49ce"
+    }
+  }
 }

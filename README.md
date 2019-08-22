@@ -18,6 +18,4 @@ Introducing **Moviv8** A random motivational quote generator. Choose to keep the
 - [Create React App](https://github.com/facebook/create-react-app)
 - [React](https://github.com/facebook/react)
 - [Sass](https://sass-lang.com)
-- [Node](https://nodejs.org/en/)
-- [PostgreSQL](https://www.postgresql.org/)
 
