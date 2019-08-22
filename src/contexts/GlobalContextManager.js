@@ -179,9 +179,10 @@ class GlobalContextManager extends React.Component {
   }
 
   editFavoritesItem = (quote, history) => {
+    console.log('edit quote', quote);
     this.setState({
       currentQuote: quote,
-      currentQuoteBgImageUrl: quote.backgroundimageurl,
+      currentQuoteBgImageUrl: quote.background_image_url,
       keepBackground: false,
       keepFonts: false,
       keepQuote: false
@@ -277,8 +278,8 @@ class GlobalContextManager extends React.Component {
       })
   }
 
-  deleteFavoritesItem = (quoteId) => {
-    const data = { quoteId }
+  deleteFavoritesItem = (savedQuoteId) => {
+    const data = { savedQuoteId }
     fetch(`${API_BASE_URL}/savedQuotes/`, {
       method: 'DELETE',
       headers: {
@@ -291,7 +292,7 @@ class GlobalContextManager extends React.Component {
       if(res.ok) {
         this.setState((currentState) => {
           let newSavedQuotes = currentState.savedQuotes.filter((savedQuote) => {
-            if(savedQuote.id === quoteId) {
+            if(savedQuote.id === savedQuoteId) {
               return false;
             }
             else {

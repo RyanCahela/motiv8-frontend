@@ -11,7 +11,6 @@ export default class Menu extends React.Component {
       menuIsOpen: false,
       userIsLoggedIn: true
     }
-
     this.toggleMenuIsOpen = this.toggleMenuIsOpen.bind(this);
   }
 
