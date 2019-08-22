@@ -5,6 +5,8 @@ Introducing **Moviv8** A random motivational quote generator. Choose to keep the
 
 [View Live App](https://motiv8.ryancahela.now.sh)
 
+[Motiv8 Backend Repository](https://github.com/RyanCahela/Motiv8-backend)
+
 
 ## Features
 
