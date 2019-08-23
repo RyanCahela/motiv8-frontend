@@ -1,23 +1,29 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import HeroImage from '../components/LandingPage/HeroImage'
 
-export default function LandingPage() {
+
+export default function LandingPage({ history }) {
   return (
-    <div className="container landing-page-container">
-      <h1 className="landing-page__header">Welcome to Motiv8</h1>  
-        <main>
-          <h2 className="landing-page__subheader">Customize your inspiration</h2>
-          <div>
-            Motiv8 is a random quote generator.
-            <ul>
-              <li>Users can create unique quote, font, and background image pairings.</li>
-              <li>If a user chooses to create an account they will have the ability to save their favorite quotes to their profile.</li>
-            </ul> 
-          </div>
-          <Link to={'/quotes'}>
-            <button className="get-started-button">Get Started!</button>
-          </Link>
-        </main>
+    <div className="landing-page-container">
+      <HeroImage />
+      <main className="landing-page__main-content">
+        <div className="landing-page__copy">
+          <h3>Motiv8 is a random quote generator.</h3>
+          <ul className="landing-page__list">
+            <li className="landing-page__list-item">
+              <i class="fas fa-palette landing-page__icon"></i>
+              <span className="landing-page__list-copy">Create unique quote, font, and background image pairings.</span>
+            </li>
+            <li className="landing-page__list-item">
+              <i class="fas fa-user-circle landing-page__icon"></i>
+              <span className="landing-page__list-copy">Create an account and save your favorite combos.</span>
+            </li>
+          </ul> 
+        </div>
+      </main>
+      <button className="btn get-started-button" onClick={() => history.push('/quotes')}>Get Started</button>
+
     </div>
   )
 }

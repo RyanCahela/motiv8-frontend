@@ -30,7 +30,7 @@ export default class Menu extends React.Component {
               <div className="menu-container">
                 <header className="menu">
                   <button className="menu__button" onClick={methods.toggleMenuIsOpen}>
-                    <span>{ state.menuIsOpen ? 'X' : 'Menu' }</span>
+                    <span>{ state.menuIsOpen ? 'Close' : 'Menu' }</span>
                   </button>
                   <div className="menu__greeting">
                     { state.userIsLoggedIn ? `Welcome ${state.username}`: ''}

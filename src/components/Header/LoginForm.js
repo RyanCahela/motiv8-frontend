@@ -35,6 +35,11 @@ export default class LoginForm extends Component {
         {({methods}) => {
           return (
             <div>
+            <div className="demo-credentials">
+              <h5>Demo Credentials</h5>
+              <div>Login: Demo</div>
+              <div>Pass: Demo123</div>
+            </div>
             <form className="input-form" onSubmit={(e) => methods.loginUser(e, this.state)}>
               <label className="input-form__label" htmlFor="username-input">Username</label>
               <input 

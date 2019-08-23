@@ -8,9 +8,6 @@ export default function QuoteControls() {
     return (
       <GlobalContext.Consumer>
         {({ methods, state }) => {
-
-
-
           const { 
             keepBackground,
             keepFonts,
