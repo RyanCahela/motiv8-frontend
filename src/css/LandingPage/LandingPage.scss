@@ -137,6 +137,11 @@
     flex: 0 1 375px;
   }
 
+  .splash-animation {
+    padding: 50px;
+    max-width: 800px;
+  }
+
   .splash-quote {
     font-size: $xl-font-size;
     font-family: $serif-font
