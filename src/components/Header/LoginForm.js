@@ -6,7 +6,8 @@ export default class LoginForm extends Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      errorMessage: '',
     }
   }
 
@@ -28,6 +29,15 @@ export default class LoginForm extends Component {
     }
   }
 
+  handleSubmit(e, methods) {
+    if(!this.state.username || !this.state.password) {
+      this.setState({
+        errorMessage: "Please fill enter a username and password."
+      })
+    }
+    methods.loginUser(e, this.state);
+  }
+
   render() {
 
     return (
@@ -40,19 +50,24 @@ export default class LoginForm extends Component {
               <div>Login: Demo</div>
               <div>Pass: Demo123</div>
             </div>
-            <form className="input-form" onSubmit={(e) => methods.loginUser(e, this.state)}>
+            <form className="input-form" onSubmit={(e) => this.handleSubmit(e, methods)}>
               <label className="input-form__label" htmlFor="username-input">Username</label>
               <input 
                 id="username-input"
                 type="text"
-                onChange={(e) => this.handleTextInput(e)}/>
+                onChange={(e) => this.handleTextInput(e)}
+                required/>
 
               <label className="input-form__label" htmlFor="password-input">Password</label>
               <input 
                 id="password-input" 
                 type="password" 
-                onChange={(e) => this.handleTextInput(e)} />
-
+                onChange={(e) => this.handleTextInput(e)}
+                required />
+              {this.state.errorMessage
+              ? <div className="error-message">{this.state.errorMessage}</div>
+              : ""
+              }
               <input className="input-form__submit" type="submit" value="Sign In"/>
             </form>
             </div>

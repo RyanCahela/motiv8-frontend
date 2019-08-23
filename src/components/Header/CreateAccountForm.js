@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { GlobalContext } from '../../contexts/GlobalContextManager';
+import LoadingSpinner from '../../components/Loading/LoadingSpinner';
 
 export default class CreateAccountForm extends Component {
 
@@ -9,6 +10,8 @@ export default class CreateAccountForm extends Component {
       username: '',
       password: '',
       passwordConfirm: '',
+      errorMessage: '',
+      loading: false,
     }
 
   }
@@ -35,6 +38,23 @@ export default class CreateAccountForm extends Component {
     }
   }
 
+  handleSubmit(e, methods) {
+    e.preventDefault();
+    let { password, passwordConfirm } = this.state
+    if(password !== passwordConfirm) {
+      this.setState({
+        errorMessage: "Passwords Must Match"
+      });
+      return;
+    } 
+    this.setState({
+      loading: true,
+    }, () => {
+      methods.createAccount(e, this.state, this);
+    });
+
+  }
+
   render() {
     return (
       <GlobalContext.Consumer>
@@ -44,28 +64,36 @@ export default class CreateAccountForm extends Component {
               <form 
                 className="create-account-form" 
                 onSubmit={(e) => {
-                  methods.createAccount(e, this.state);
-                  this.props.setInCreateAccountMode(false);
+                  this.handleSubmit(e, methods);
                 }}>
+                {this.state.loading
+                ? <LoadingSpinner />
+                : <>
+                  <label className="create-account-form__label" htmlFor="username-input">Username</label>
+                  <input 
+                    id="create-username-input"
+                    type="text"
+                    onChange={(e) => this.handleTextInput(e)}
+                    required/>
 
-                <label className="create-account-form__label" htmlFor="username-input">Username</label>
-                <input 
-                  id="create-username-input"
-                  type="text"
-                  onChange={(e) => this.handleTextInput(e)}/>
+                  <label className="create-account-form__label" htmlFor="password-input">Password</label>
+                  <input 
+                    id="create-password-input" 
+                    type="password" 
+                    onChange={(e) => this.handleTextInput(e)}
+                    required />
 
-                <label className="create-account-form__label" htmlFor="password-input">Password</label>
-                <input 
-                  id="create-password-input" 
-                  type="password" 
-                  onChange={(e) => this.handleTextInput(e)} />
-
-                <label className="create-account-form__label" htmlFor="password-confirm-input">Confirm Password</label>
-                <input 
-                  id="create-password-confirm-input" 
-                  type="password" 
-                  onChange={(e) => this.handleTextInput(e)}/>
-
+                  <label className="create-account-form__label" htmlFor="password-confirm-input">Confirm Password</label>
+                  <input 
+                    id="create-password-confirm-input" 
+                    type="password" 
+                    onChange={(e) => this.handleTextInput(e)}
+                    required/>
+                  </>
+                }
+                {this.state.errorMessage
+                ? <div className="error-message">{this.state.errorMessage}</div>
+                : ""}
                 <input className="create-account-form__submit" type="submit" value="Create Account"/>
               </form>
             </>

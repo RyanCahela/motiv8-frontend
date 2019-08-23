@@ -194,7 +194,7 @@ class GlobalContextManager extends React.Component {
 
 
   //USER METHODS
-  createAccount = (e, userInfo) => {
+  createAccount = (e, userInfo, createAccount) => {
     e.preventDefault();
     const data = {
       username: userInfo.username,
@@ -214,7 +214,12 @@ class GlobalContextManager extends React.Component {
       }
     })
     .then(resJson => {
-      this.loginUser(null, data);
+      this.loginUser(null, data)
+        .then(() => {
+          createAccount.setState({
+            loading: false,
+          })
+        })
     })
   }
 
@@ -225,7 +230,7 @@ class GlobalContextManager extends React.Component {
       password: userInfo.password
     }
 
-    fetch(`${API_BASE_URL}/login`, {
+    return fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -249,7 +254,6 @@ class GlobalContextManager extends React.Component {
         savedQuotes: res.savedQuotes,
         menuIsOpen: false
       })
-      
     })
   }
 
