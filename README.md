@@ -5,8 +5,8 @@ Introducing **Moviv8** A random motivational quote generator. Choose to keep the
 
 [View Live App](https://motiv8.ryancahela.now.sh)
 
-[Screenshot](https://i.imgur.com/4BvkqPU.png)
-[ScreenShot](https://i.imgur.com/iHBvSDF.png)
+![Screenshot](https://i.imgur.com/4BvkqPU.png)
+![ScreenShot](https://i.imgur.com/iHBvSDF.png)
 
 [Motiv8 Backend Repository](https://github.com/RyanCahela/Motiv8-backend)
 
