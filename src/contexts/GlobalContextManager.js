@@ -49,8 +49,7 @@ class GlobalContextManager extends React.Component {
         header,
         payload,
       } = localToken;
-      console.log('header', header);
-      console.log('payload', payload);
+
       
       this.setState({
         userIsLoggedIn: true,
@@ -179,7 +178,6 @@ class GlobalContextManager extends React.Component {
   }
 
   editFavoritesItem = (quote, history) => {
-    console.log('edit quote', quote);
     this.setState({
       currentQuote: quote,
       currentQuoteBgImageUrl: quote.background_image_url,
