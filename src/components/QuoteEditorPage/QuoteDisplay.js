@@ -2,6 +2,9 @@ import React from 'react';
 import { GlobalContext } from '../../contexts/GlobalContextManager';
 
 export default class QuoteDisplay extends React.Component {
+  state = {
+    loading: false,
+  }
 
   componentDidMount() {
   }
