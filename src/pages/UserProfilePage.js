@@ -3,8 +3,13 @@ import FavoritesList from '../components/UserProfilePage/FavoritesList.js';
 
 export default class UserProfilePage extends React.Component{
 
+  constructor(props) {
+    super(props);
+    this.history = props.history
+  }
+
   componentDidMount() {
-    this.props.getUpdatedSavedQuotes(this.props.userId);
+    this.props.getUpdatedSavedQuotes('Demo');
   }
 
   render() {

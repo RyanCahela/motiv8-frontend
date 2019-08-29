@@ -11,6 +11,10 @@ export default class LoginForm extends Component {
     }
   }
 
+  componentWillUnmount() {
+    let { methods } = this.context
+    methods.setSignInError('');
+  }
 
   handleTextInput(e) {
     switch (e.target.id) {
@@ -42,7 +46,7 @@ export default class LoginForm extends Component {
 
     return (
       <GlobalContext.Consumer>
-        {({methods}) => {
+        {({methods, state}) => {
           return (
             <div>
             <div className="demo-credentials">
@@ -50,6 +54,10 @@ export default class LoginForm extends Component {
               <div>Login: Demo</div>
               <div>Pass: Demo123</div>
             </div>
+            {state.signInError
+              ? <div className="error-message">{state.signInError}</div>
+              : undefined 
+            }
             <form className="input-form" onSubmit={(e) => this.handleSubmit(e, methods)}>
               <label className="input-form__label" htmlFor="username-input">Username</label>
               <input 
@@ -77,3 +85,5 @@ export default class LoginForm extends Component {
     )
   }
 }
+
+LoginForm.contextType = GlobalContext;

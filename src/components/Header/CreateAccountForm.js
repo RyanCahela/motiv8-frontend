@@ -16,6 +16,11 @@ export default class CreateAccountForm extends Component {
 
   }
 
+  componentWillUnmount() {
+    let { methods } = this.context;
+    methods.setCreateAccountError('');
+  }
+
   handleTextInput(e) {
     switch (e.target.id) {
       case 'create-username-input':
@@ -58,7 +63,7 @@ export default class CreateAccountForm extends Component {
   render() {
     return (
       <GlobalContext.Consumer>
-        {({ methods }) => {
+        {({ methods, state }) => {
           return (
             <>
               <form 
@@ -69,6 +74,10 @@ export default class CreateAccountForm extends Component {
                 {this.state.loading
                 ? <LoadingSpinner />
                 : <>
+                  {state.createAccountError
+                    ?<div className="error-message">{state.createAccountError}</div>
+                    :undefined
+                  }
                   <label className="create-account-form__label" htmlFor="username-input">Username</label>
                   <input 
                     id="create-username-input"
@@ -103,3 +112,5 @@ export default class CreateAccountForm extends Component {
     )
   };
 }
+
+CreateAccountForm.contextType = GlobalContext;

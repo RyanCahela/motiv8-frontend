@@ -36,6 +36,9 @@ class GlobalContextManager extends React.Component {
       savedQuotes: [],
 
       menuIsOpen: false,
+
+      signInError: '',
+      createAccountError: ''
     }
   }
 
@@ -50,7 +53,6 @@ class GlobalContextManager extends React.Component {
         payload,
       } = localToken;
 
-      
       this.setState({
         userIsLoggedIn: true,
         userId: payload.userId,
@@ -146,7 +148,7 @@ class GlobalContextManager extends React.Component {
         getUpdatedSavedQuotes(userId);
         this.setState({currentQuoteSaved: true })
       }
-    })
+    });
   }
 
   //refactor out to 3 different toggle functions
@@ -206,19 +208,24 @@ class GlobalContextManager extends React.Component {
       },
       body: JSON.stringify(data)
     })
-    .then(res => {
-      if(res.ok) {
-        return res.json();
-      }
-    })
+    .then(res => res.json())
     .then(resJson => {
+      console.log('resJson', resJson);
+      if(resJson.hasOwnProperty('error')) {
+        this.setState({
+          createAccountError: resJson.error,
+        });
+      }
       this.loginUser(null, data)
         .then(() => {
           createAccount.setState({
             loading: false,
-          })
-        })
+          });
+      });
     })
+    .catch(err => {
+      console.error(err);
+    });
   }
 
   loginUser = (e, userInfo) => {
@@ -237,9 +244,10 @@ class GlobalContextManager extends React.Component {
     })
     .then(res => res.json())
     .then(res => {
-
       if(res.error) {
-        console.log('error', res.error);
+        this.setState({
+          signInError: res.error
+        });
         return;
       }
       let decodedToken = jwt.decode(res.authToken);
@@ -266,8 +274,8 @@ class GlobalContextManager extends React.Component {
     })
   }
 
-  getUpdatedSavedQuotes = (userId) => {
-    fetch(`${API_BASE_URL}/savedQuotes/${userId}`, {
+  getUpdatedSavedQuotes = (username) => {
+    fetch(`${API_BASE_URL}/savedQuotes/${username}`, {
       headers: {
         'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
       }
@@ -402,6 +410,18 @@ class GlobalContextManager extends React.Component {
       this.getQuotes(30);
     }
   }
+
+  setCreateAccountError = (message) => {
+    this.setState({
+      createAccountError: message,
+    });
+  }
+
+  setSignInError = (message) => {
+    this.setState({
+      signInError: message
+    });
+  }
   //END HELPER FUNCTIONS
 
   render() {
@@ -418,7 +438,9 @@ class GlobalContextManager extends React.Component {
         logoutUser: this.logoutUser,
         getUpdatedSavedQuotes: this.getUpdatedSavedQuotes,
         deleteFavoritesItem: this.deleteFavoritesItem,
-        toggleMenuIsOpen: this.toggleMenuIsOpen
+        toggleMenuIsOpen: this.toggleMenuIsOpen,
+        setCreateAccountError: this.setCreateAccountError,
+        setSignInError: this.setSignInError
       }
     }
   
