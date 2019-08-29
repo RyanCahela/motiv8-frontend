@@ -1,5 +1,6 @@
 import React from 'react';
 import { GlobalContext } from '../../contexts/GlobalContextManager';
+import LoadingSpinner from '../Loading/LoadingSpinner';
 
 export default class QuoteDisplay extends React.Component {
   state = {
@@ -7,6 +8,13 @@ export default class QuoteDisplay extends React.Component {
   }
 
   componentDidMount() {
+
+  }
+
+  setIsLoading(bool) {
+    this.setState({
+      loading: bool,
+    });
   }
 
   render() {
@@ -25,6 +33,15 @@ export default class QuoteDisplay extends React.Component {
       
           const dynamicAuthorFont = {
             fontFamily: state.currentQuoteFontPair['author']
+          }
+
+          if(!state.currentQuoteBgImageUrl) {
+            return (
+            <div className="quote-display">
+              <LoadingSpinner />
+            </div>
+            )
+
           }
 
           return (
