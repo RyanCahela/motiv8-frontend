@@ -210,7 +210,6 @@ class GlobalContextManager extends React.Component {
     })
     .then(res => res.json())
     .then(resJson => {
-      console.log('resJson', resJson);
       if(resJson.hasOwnProperty('error')) {
         this.setState({
           createAccountError: resJson.error,
@@ -252,7 +251,6 @@ class GlobalContextManager extends React.Component {
       }
       let decodedToken = jwt.decode(res.authToken);
       TokenServices.setToken('motiv8-jwt', res.authToken);
-      console.log(decodedToken);
         this.setState({
         userIsLoggedIn: true,
         username: decodedToken.sub,
