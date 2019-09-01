@@ -1,6 +1,6 @@
 import React from 'react';
 import quoteFontPairings from '../fonts/quoteFontPairings';
-import IteratorServices from '../services/IteratorServices';
+import { createIterator } from '../services/IteratorServices';
 import TokenServices from '../services/TokenServices';
 import FetchServices, { convertResToJson } from '../services/FetchServices';
 import { setLoginToken, fetchSavedQuotes, finalizeLogin, logoutUser } from '../services/UserServices';
@@ -14,8 +14,9 @@ class GlobalContextManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      quotes: [],
-      quoteBackgroundImageUrls: [],
+      quoteIterator: {},
+      backgroundUrlIterator: {},
+      fontIterator: {},
       quoteFontPairings: [...quoteFontPairings],
 
       currentQuote: {},
@@ -59,30 +60,52 @@ class GlobalContextManager extends React.Component {
   initializeApp() {
     let getImages = this.getBackgroundImages(30);
     let getQuotes = this.getQuotes(30);
+    let getFonts = this.getFonts();
     
-    Promise.all([ getQuotes, getImages ])
-      .then(values => {
-        this.fontPairItObj = IteratorServices.createIterator(this.state.quoteFontPairings);
-        this.randomizeQuote();
-      })
-      .catch(err => console.err(err));
+    Promise.all([ getQuotes, getImages, getFonts ])
+      .then(() => this.randomizeQuote())
+      .catch(err => console.error(err));
   }
   //END APP METHODS
 
   //QUOTE 
   randomizeQuote = () => {
+    console.log('randomizeQuote ran');
+    const {
+      backgroundUrlIterator,
+      quoteIterator,
+      fontIterator,
+      currentQuote,
+      quoteBgImageUrl,
+      currentQuoteFontPair,
+      keepBackground,
+      keepFonts,
+      keepQuote,
+    } = this.state;
+
     this.setState({
+      //resets save button
       currentQuoteSaved: false
     })
-    if(!this.state.keepBackground) {
-      this.iterateBackgroundUrl(this.backgroundUrlItObj.next());
+
+    let currentQuoteConfig = {
+      quote: currentQuote,
+      quoteBgImageUrl: quoteBgImageUrl,
+      quoteFontPair: currentQuoteFontPair,
     }
-    if(!this.state.keepFonts) {
-      this.iterateFontPairing(this.fontPairItObj.next());
-    }
-    if(!this.state.keepQuote) {
-      this.iterateQuote(this.quoteItObj.next());
-    }
+
+    this.pushToHistory(currentQuoteConfig)
+      .then(() => {
+        if(!keepBackground) {
+          this.iterateBackgroundUrl(backgroundUrlIterator);
+        }
+        if(!keepFonts) {
+          this.iterateFontPairing(fontIterator);
+        }
+        if(!keepQuote) {
+          this.iterateQuote(quoteIterator);
+        }
+      });
   }
   
   undoRandomizeQuote = () => {
@@ -175,9 +198,7 @@ class GlobalContextManager extends React.Component {
   }
   //END QUOTE METHODS
 
-
   //USER METHODS
-
   loginUser = (userInfo) => {
     console.log('userInfo', userInfo);
     return FetchServices.postUserLogin(userInfo)
@@ -192,12 +213,8 @@ class GlobalContextManager extends React.Component {
 
   getUpdatedSavedQuotes = (username) => {
     FetchServices.getSavedQuotesByUsername(username)
-    .then(res => res.json())
-    .then(updatedQuotesList => {
-      this.setState({
-        savedQuotes: updatedQuotesList
-      });
-    });
+    .then(convertResToJson)
+    .then(this.setUpdatedSavedQuotes);
   }
 
   deleteFavoritesItem = (savedQuoteId) => {
@@ -227,80 +244,90 @@ class GlobalContextManager extends React.Component {
   }
   
   //HELPER FUNCTIONS
+  setBackgroundUrlIterator = (iterator) => {
+    return new Promise((resolve) => {
+      this.setState({ backgroundUrlIterator: iterator }, resolve);
+    });
+  }
+
+  setQuoteIterator = (iterator) => {
+    return new Promise((resolve) => {
+      this.setState({ quoteIterator: iterator }, resolve);
+    });
+  }
+
+  setFontIterator = (iterator) => {
+    return new Promise((resolve) => {
+      this.setState({ fontIterator: iterator}, resolve(this.state.fontIterator));
+    });
+  }
+
+  setUpdatedSavedQuotes = (json) => {
+    return new Promise((resolve) => {
+      this.setState({ savedQuotes: json }, resolve);
+    });
+  }
+
+  pushToHistory = (quoteConfig) => {
+    return new Promise((resolve) => {
+      this.setState((currentState) => {
+        let history = currentState.quoteHistory;
+        history.push(quoteConfig);
+        return {
+          quoteHistory: history 
+        }
+      }, resolve) 
+    });
+  }
+
   getBackgroundImages(numberOfImages = 30) {
     return FetchServices.getBackgroundImages(numberOfImages)
             .then(convertResToJson)
-            .then(resJson => {
-              this.backgroundUrlItObj = IteratorServices.createIterator(resJson);
-              return new Promise((resolve) => {
-                this.setState({
-                  quoteBackgroundImageUrls: resJson,
-                },
-                //runs after setState
-                () => {
-                  resolve("backgroundUrlItObj Created");
-                });
-              });
-            });
+            .then(createIterator)
+            .then(this.setBackgroundUrlIterator);
   }
 
   getQuotes(numberOfQuotes = 30) {
     //TODO make quotes route dynamic to accept numberOfQuotes param
     return FetchServices.getQuotes()
             .then(convertResToJson)
-            .then(quotes => {
-              return new Promise((resolve) => {
-                this.setState({
-                  quotes: quotes
-                },
-                //runs after setState
-                () => {
-                  this.quoteItObj = IteratorServices.createIterator(this.state.quotes);
-                  resolve("quoteItObj Created");
-                });
-              });
-            });
+            .then(createIterator)
+            .then(this.setQuoteIterator);
+  }
+
+  getFonts() {
+    const fontIterator = createIterator(this.state.quoteFontPairings);
+    return this.setFontIterator(fontIterator);
   }
   
-  iterateBackgroundUrl({value, done}) {
+  iterateBackgroundUrl(iterator) {
+    const {value, done} = iterator.next();
     if(!done) {
-      this.setState((currentState) => {
-        return {
-          currentQuoteBgImageUrl: value.urls.regular,
-          prevQuoteBgImageUrl: currentState.currentQuoteBgImageUrl
-        }
-      })
+      this.setState({ currentQuoteBgImageUrl: value.urls.regular });
     }
-    //create new iterator when old one runs out
     else {
+      //create new iterator when old one runs out
       this.getBackgroundImages(30)
     }
   }
   
-  iterateFontPairing({value, done}) {
+  iterateFontPairing = (iterator) => {
+    const {value, done} = iterator.next();
     if(!done) {
-      this.setState((currentState) => {
-        return {
-          currentQuoteFontPair: value,
-          prevQuoteFontPair: currentState.fontPair 
-        }
-      })
+      this.setState({ currentQuoteFontPair: value });
     }
     else {
       //if iterator done create new iterator then call the first value on it.
-      this.fontPairItObj = IteratorServices.createIterator(this.state.quoteFontPairings);
-      this.iterateFontPairing(this.fontPairItObj.next());
+      let newFontIterator = createIterator(this.state.quoteFontPairings);
+      this.setFontIterator(newFontIterator)
+            .then(this.iterateFontPairing);
     }
   }
   
-  iterateQuote({value, done}) {
+  iterateQuote = (iterator) => {
+    const { value, done } = iterator.next();
     if(!done) {
-      this.setState(currentState => {
-        return {
-          currentQuote: value,
-          prevQuote: currentState.currentQuote
-        }
-      })
+      this.setState({currentQuote: value })
     }
     else {
       this.getQuotes(30);

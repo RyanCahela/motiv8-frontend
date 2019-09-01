@@ -1,14 +1,9 @@
-const IteratorServices = {
-  createIterator(iterable) {
-    return this.createIteratorObj(iterable);
-  },
-
-  *createIteratorObj(arr) {
-    for(let obj of arr) {
-      yield obj;
-    }
-  },
-  
+function *createIteratorObj(arr) {
+  for(let obj of arr) {
+    yield obj;
+  }
 }
 
-export default IteratorServices;
+export function createIterator(iterable) {
+  return createIteratorObj(iterable);
+}
