@@ -65,7 +65,7 @@ class GlobalContextManager extends React.Component {
         this.fontPairItObj = IteratorServices.createIterator(this.state.quoteFontPairings);
         this.randomizeQuote();
       })
-      .catch(err => console.log(err));
+      .catch(err => console.err(err));
   }
   //END APP METHODS
 
@@ -92,7 +92,7 @@ class GlobalContextManager extends React.Component {
           currentQuoteBgImageUrl: currentState.prevQuoteBgImageUrl,
           prevQuoteBgImageUrl: currentState.currentQuoteBgImageUrl
         }
-      })
+      });
     }
 
     if(!this.state.keepFonts) {
@@ -101,7 +101,7 @@ class GlobalContextManager extends React.Component {
           fontPair: currentState.previousFontPair,
           prevFontPair: currentState.fontPair
         }
-      })
+      });
     }
 
     if(!this.state.keepQuote) {
@@ -229,37 +229,37 @@ class GlobalContextManager extends React.Component {
   //HELPER FUNCTIONS
   getBackgroundImages(numberOfImages = 30) {
     return FetchServices.getBackgroundImages(numberOfImages)
-    .then(res => res.json())
-    .then(resJson => {
-      return new Promise((resolve) => {
-        this.setState({
-          quoteBackgroundImageUrls: resJson,
-        },
-        //runs after setState
-        () => {
-          this.backgroundUrlItObj = IteratorServices.createIterator(this.state.quoteBackgroundImageUrls);
-          resolve("backgroundUrlItObj Created");
-        })
-      })
-    })
+            .then(convertResToJson)
+            .then(resJson => {
+              this.backgroundUrlItObj = IteratorServices.createIterator(resJson);
+              return new Promise((resolve) => {
+                this.setState({
+                  quoteBackgroundImageUrls: resJson,
+                },
+                //runs after setState
+                () => {
+                  resolve("backgroundUrlItObj Created");
+                });
+              });
+            });
   }
 
   getQuotes(numberOfQuotes = 30) {
     //TODO make quotes route dynamic to accept numberOfQuotes param
-    return fetch(`${API_BASE_URL}/quotes`)
-    .then(quotes => quotes.json())
-    .then(quotes => {
-      return new Promise((resolve) => {
-        this.setState({
-          quotes: quotes
-        },
-        //runs after setState
-        () => {
-          this.quoteItObj = IteratorServices.createIterator(this.state.quotes);
-          resolve("quoteItObj Created");
-        })
-      });
-    });
+    return FetchServices.getQuotes()
+            .then(convertResToJson)
+            .then(quotes => {
+              return new Promise((resolve) => {
+                this.setState({
+                  quotes: quotes
+                },
+                //runs after setState
+                () => {
+                  this.quoteItObj = IteratorServices.createIterator(this.state.quotes);
+                  resolve("quoteItObj Created");
+                });
+              });
+            });
   }
   
   iterateBackgroundUrl({value, done}) {

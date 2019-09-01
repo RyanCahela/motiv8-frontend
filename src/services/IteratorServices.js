@@ -7,7 +7,8 @@ const IteratorServices = {
     for(let obj of arr) {
       yield obj;
     }
-  }
+  },
+  
 }
 
 export default IteratorServices;

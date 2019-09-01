@@ -41,16 +41,18 @@ export default class CreateAccountForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    //check if password inputs match.
     let { password, passwordConfirm } = this.state
     if(password !== passwordConfirm) {
       this.setState({
         errorMessage: "Passwords Must Match"
       });
       return;
-    } 
+    }
     this.setState({
       loading: true,
     }, () => {
+      //Create Account
       let newUserInfo = {
         username: this.state.username,
         password: this.state.password,
@@ -94,8 +96,8 @@ export default class CreateAccountForm extends Component {
           ? <LoadingSpinner />
           : <>
             {errorMessage
-              ?<div className="error-message">{errorMessage}</div>
-              :undefined
+              ? <div className="error-message">{errorMessage}</div>
+              : ''
             }
             <label className="create-account-form__label" htmlFor="username-input">Username</label>
             <input 

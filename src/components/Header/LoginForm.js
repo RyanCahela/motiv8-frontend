@@ -70,7 +70,7 @@ export default class LoginForm extends Component {
         </div>
         {errorMessage
           ? <div className="error-message">{errorMessage}</div>
-          : '' 
+          : ''
         }
         <form className="input-form" onSubmit={(e) => this.handleSubmit(e)}>
           <label className="input-form__label" htmlFor="username-input">Username</label>
