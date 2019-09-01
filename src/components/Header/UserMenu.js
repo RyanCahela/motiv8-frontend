@@ -7,13 +7,13 @@ export default function UserMenu(props) {
 
   return (
     <GlobalContext.Consumer>
-      {({ state, methods }) => {
+      {({ GlobalState, GlobalMethods }) => {
           return (
             <ul className="user-menu">
               <NavLink 
                 className="user-menu__list-item__link" 
-                to={`/user/${state.username}`} 
-                onClick={() => methods.toggleMenuIsOpen()}
+                to={`/user/${GlobalState.username}`} 
+                onClick={() => GlobalMethods.toggleMenuIsOpen()}
               >
                 <li className="user-menu__list-item">
                   Profile
@@ -22,7 +22,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={'/quotes'} 
-                onClick={() => methods.toggleMenuIsOpen()}
+                onClick={() => GlobalMethods.toggleMenuIsOpen()}
               >
                 <li className="user-menu__list-item">
                   Quote Generator
@@ -31,7 +31,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={'/quotes'} 
-                onClick={() => methods.logoutUser()}
+                onClick={() => GlobalMethods.logoutUser()}
               >
                 <li className="user-menu__list-item">
                   Log Out

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import HeroImage from '../components/LandingPage/HeroImage'
+import HeroImage from './HeroImage'
 
 
 export default function LandingPage({ history }) {
@@ -12,11 +11,11 @@ export default function LandingPage({ history }) {
           <h3>Motiv8 is a random quote generator.</h3>
           <ul className="landing-page__list">
             <li className="landing-page__list-item">
-              <i class="fas fa-palette landing-page__icon"></i>
+              <i className="fas fa-palette landing-page__icon"></i>
               <span className="landing-page__list-copy">Create unique quote, font, and background image pairings.</span>
             </li>
             <li className="landing-page__list-item">
-              <i class="fas fa-user-circle landing-page__icon"></i>
+              <i className="fas fa-user-circle landing-page__icon"></i>
               <span className="landing-page__list-copy">Create an account and save your favorite combos.</span>
             </li>
           </ul> 

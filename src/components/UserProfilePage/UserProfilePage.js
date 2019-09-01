@@ -1,5 +1,5 @@
 import React from 'react'
-import FavoritesList from '../components/UserProfilePage/FavoritesList.js';
+import FavoritesList from './FavoritesList.js';
 
 export default class UserProfilePage extends React.Component{
 

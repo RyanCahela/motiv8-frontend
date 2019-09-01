@@ -7,12 +7,16 @@ export default function QuoteControls() {
 
     return (
       <GlobalContext.Consumer>
-        {({ methods, state }) => {
+        {({ GlobalState, GlobalMethods }) => {
           const { 
             keepBackground,
             keepFonts,
             keepQuote,
-          }  = state
+          }  = GlobalState;
+
+          const {
+            handleCheckboxCheck,
+          } = GlobalMethods;
 
           const iconSize = 'lg';
           
@@ -21,7 +25,7 @@ export default function QuoteControls() {
               <h5 className="quote-controls-heading">Randomize Options</h5>
               <div className="quote-controls">
                 <input
-                  onChange={(e) => methods.handleCheckboxCheck(e)}
+                  onChange={(e) => handleCheckboxCheck(e)}
                   type="checkbox"
                   id="keep-quote-checkbox" />
                 <label className="quote-controls__label" htmlFor="keep-quote-checkbox">
@@ -34,7 +38,7 @@ export default function QuoteControls() {
                   <span className="quote-controls__label__text">Keep Quote</span>
                 </label>
                 <input
-                  onChange={(e) => methods.handleCheckboxCheck(e)}
+                  onChange={(e) => handleCheckboxCheck(e)}
                   type="checkbox"
                   id="keep-fonts-checkbox" />
                 <label className="quote-controls__label" htmlFor="keep-fonts-checkbox">
@@ -47,7 +51,7 @@ export default function QuoteControls() {
                   <span className="quote-controls__label__text">Keep Fonts</span>
                 </label>
                 <input
-                  onChange={(e) => methods.handleCheckboxCheck(e)}
+                  onChange={(e) => handleCheckboxCheck(e)}
                   type="checkbox"
                   id="keep-background-checkbox" />
                 <label className="quote-controls__label" htmlFor="keep-background-checkbox">

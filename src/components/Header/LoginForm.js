@@ -12,8 +12,7 @@ export default class LoginForm extends Component {
   }
 
   componentWillUnmount() {
-    let { methods } = this.context
-    methods.setSignInError('');
+    this.setErrorMessage('');
   }
 
   handleTextInput(e) {
@@ -33,55 +32,63 @@ export default class LoginForm extends Component {
     }
   }
 
-  handleSubmit(e, methods) {
-    if(!this.state.username || !this.state.password) {
-      this.setState({
-        errorMessage: "Please fill enter a username and password."
-      })
+  setErrorMessage = (message) => {
+    console.log('message', message);
+    this.setState({
+      errorMessage: message
+    });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const { GlobalMethods } = this.context;
+    const { username, password } = this.state;
+
+    if(!username || !password) {
+      this.setErrorMessage("Please fill enter a username and password.");
+      return;
     }
-    methods.loginUser(e, this.state);
+
+    GlobalMethods.loginUser({
+      username: this.state.username,
+      password: this.state.password
+    })
+    .catch(err => {
+      console.log('catch err', err);
+      this.setErrorMessage(err);
+    });
   }
 
   render() {
-
+    const { errorMessage } = this.state 
     return (
-      <GlobalContext.Consumer>
-        {({methods, state}) => {
-          return (
-            <div>
-            <div className="demo-credentials">
-              <h5>Demo Credentials</h5>
-              <div>Login: Demo</div>
-              <div>Pass: Demo123</div>
-            </div>
-            {state.signInError
-              ? <div className="error-message">{state.signInError}</div>
-              : undefined 
-            }
-            <form className="input-form" onSubmit={(e) => this.handleSubmit(e, methods)}>
-              <label className="input-form__label" htmlFor="username-input">Username</label>
-              <input 
-                id="username-input"
-                type="text"
-                onChange={(e) => this.handleTextInput(e)}
-                required/>
+      <div>
+        <div className="demo-credentials">
+          <h5>Demo Credentials</h5>
+          <div>Login: Demo</div>
+          <div>Pass: Demo123</div>
+        </div>
+        {errorMessage
+          ? <div className="error-message">{errorMessage}</div>
+          : '' 
+        }
+        <form className="input-form" onSubmit={(e) => this.handleSubmit(e)}>
+          <label className="input-form__label" htmlFor="username-input">Username</label>
+          <input 
+            id="username-input"
+            type="text"
+            onChange={(e) => this.handleTextInput(e)}
+            required/>
 
-              <label className="input-form__label" htmlFor="password-input">Password</label>
-              <input 
-                id="password-input" 
-                type="password" 
-                onChange={(e) => this.handleTextInput(e)}
-                required />
-              {this.state.errorMessage
-              ? <div className="error-message">{this.state.errorMessage}</div>
-              : ""
-              }
-              <input className="input-form__submit" type="submit" value="Sign In"/>
-            </form>
-            </div>
-          )
-        }}
-      </GlobalContext.Consumer>
+          <label className="input-form__label" htmlFor="password-input">Password</label>
+          <input 
+            id="password-input" 
+            type="password" 
+            onChange={(e) => this.handleTextInput(e)}
+            required />
+          <input className="input-form__submit" type="submit" value="Sign In"/>
+        </form>
+      </div>
     )
   }
 }

@@ -12,26 +12,33 @@ export default class QuoteDisplay extends React.Component {
   render() {
     return (
       <GlobalContext.Consumer>
-        {({ state }) => {
+        {({ GlobalState }) => {
+
+          const {
+            currentQuote,
+            currentQuoteBgImageUrl,
+            currentQuoteFontPair,
+          } = GlobalState;
+
           const dynamicBackgroundStyles = {
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
-            backgroundImage: `url(${state.currentQuoteBgImageUrl})`,
+            backgroundImage: `url(${currentQuoteBgImageUrl})`,
           }
 
           const dynamicBodyFont = {
-            fontFamily: state.currentQuoteFontPair['body']
+            fontFamily: currentQuoteFontPair['body']
           }
       
           const dynamicAuthorFont = {
-            fontFamily: state.currentQuoteFontPair['author']
+            fontFamily: currentQuoteFontPair['author']
           }
 
           return (
             <div className="quote-display"style={dynamicBackgroundStyles}>
               <div className="quote-backdrop">
-                <div className="quote-body" style={dynamicBodyFont}>{state.currentQuote.quote}</div>
-                <div className="quote-author" style={dynamicAuthorFont}>{state.currentQuote.author}</div>
+                <div className="quote-body" style={dynamicBodyFont}>{currentQuote.quote}</div>
+                <div className="quote-author" style={dynamicAuthorFont}>{currentQuote.author}</div>
               </div>
             </div>
           )

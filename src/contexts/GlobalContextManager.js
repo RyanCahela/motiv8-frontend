@@ -1,7 +1,9 @@
 import React from 'react';
 import quoteFontPairings from '../fonts/quoteFontPairings';
 import IteratorServices from '../services/IteratorServices';
-import TokenServices from'../services/TokenServices';
+import TokenServices from '../services/TokenServices';
+import FetchServices, { convertResToJson } from '../services/FetchServices';
+import { setLoginToken, fetchSavedQuotes, finalizeLogin, logoutUser } from '../services/UserServices';
 import jwt from 'jsonwebtoken';
 import { API_BASE_URL } from '../config';
 
@@ -36,9 +38,6 @@ class GlobalContextManager extends React.Component {
       savedQuotes: [],
 
       menuIsOpen: false,
-
-      signInError: '',
-      createAccountError: ''
     }
   }
 
@@ -48,18 +47,13 @@ class GlobalContextManager extends React.Component {
     const localToken = jwt.decode(TokenServices.getTokenByKey('motiv8-jwt'), {complete: true});
     
     if (localToken) {
-      const {
-        header,
-        payload,
-      } = localToken;
-
+      const { payload } = localToken;
       this.setState({
         userIsLoggedIn: true,
         userId: payload.userId,
         username: payload.sub
-      })
+      });
     }
-
   }
 
   initializeApp() {
@@ -75,7 +69,7 @@ class GlobalContextManager extends React.Component {
   }
   //END APP METHODS
 
-  //QUOTE METHODS
+  //QUOTE 
   randomizeQuote = () => {
     this.setState({
       currentQuoteSaved: false
@@ -121,12 +115,9 @@ class GlobalContextManager extends React.Component {
   }
 
   saveQuote = (userId, getUpdatedSavedQuotes) => {
-    //TODO sends current quote config to favorites db table.
-
     if(userId === 0) {
       return;
     }
-
     const data = {
       backgroundImageUrl: this.state.currentQuoteBgImageUrl,
       quoteId: this.state.currentQuote.id,
@@ -134,15 +125,7 @@ class GlobalContextManager extends React.Component {
       authorFont: this.state.currentQuoteFontPair.author,
       userId: userId,
     }
-
-    fetch(`${API_BASE_URL}/savedQuotes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
-      },
-      body: JSON.stringify(data)
-    })
+    FetchServices.postSaveQuote(data)
     .then(res => {
       if(res.ok) {
         getUpdatedSavedQuotes(userId);
@@ -194,125 +177,43 @@ class GlobalContextManager extends React.Component {
 
 
   //USER METHODS
-  createAccount = (e, userInfo, createAccount) => {
-    e.preventDefault();
-    const data = {
-      username: userInfo.username,
-      password: userInfo.password
-    }
 
-    fetch(`${API_BASE_URL}/users`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    })
+  loginUser = (userInfo) => {
+    return FetchServices.postUserLogin(userInfo)
+            .then(convertResToJson)
+            .then(setLoginToken.bind(this))
+            .then(fetchSavedQuotes)
+            .then(convertResToJson)
+            .then(finalizeLogin.bind(this))
+  }
+
+  logoutUser = () => logoutUser.call(this);
+
+  getUpdatedSavedQuotes = (username) => {
+    FetchServices.getSavedQuotesByUsername(username)
     .then(res => res.json())
-    .then(resJson => {
-      if(resJson.hasOwnProperty('error')) {
-        this.setState({
-          createAccountError: resJson.error,
-        });
-      }
-      this.loginUser(null, data)
-        .then(() => {
-          createAccount.setState({
-            loading: false,
-          });
+    .then(updatedQuotesList => {
+      this.setState({
+        savedQuotes: updatedQuotesList
       });
-    })
-    .catch(err => {
-      console.error(err);
     });
   }
 
-  loginUser = (e, userInfo) => {
-    if(e) e.preventDefault();
-    const data = {
-      username: userInfo.username,
-      password: userInfo.password
-    }
-
-    return fetch(`${API_BASE_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
-      if(res.error) {
-        this.setState({
-          signInError: res.error
-        });
-        return;
-      }
-      let decodedToken = jwt.decode(res.authToken);
-      TokenServices.setToken('motiv8-jwt', res.authToken);
-        this.setState({
-        userIsLoggedIn: true,
-        username: decodedToken.sub,
-        userId: decodedToken.userId,
-        savedQuotes: res.savedQuotes,
-        menuIsOpen: false
-      })
-    })
-  }
-
-  logoutUser = () => {
-    TokenServices.removeTokenByKey('motiv8-jwt');
-    this.setState({
-      userIsLoggedIn: false,
-      userId: 0,
-      username: '',
-      savedQuotes: [],
-      menuIsOpen: false
-    })
-  }
-
-  getUpdatedSavedQuotes = (username) => {
-    fetch(`${API_BASE_URL}/savedQuotes/${username}`, {
-      headers: {
-        'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
-      }
-    })
-      .then(res => res.json())
-      .then(updatedQuotesList => {
-        this.setState({
-          savedQuotes: updatedQuotesList
-        })
-      })
-  }
-
   deleteFavoritesItem = (savedQuoteId) => {
-    const data = { savedQuoteId }
-    fetch(`${API_BASE_URL}/savedQuotes/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
-      },
-      body: JSON.stringify(data)
-    })
+    FetchServices.deleteSavedQuoteById(savedQuoteId)
     .then(res => {
       if(res.ok) {
-        this.setState((currentState) => {
-          let newSavedQuotes = currentState.savedQuotes.filter((savedQuote) => {
-            if(savedQuote.id === savedQuoteId) {
-              return false;
-            }
-            else {
-              return savedQuote
-            }
+        this.setState(({ savedQuotes }) => {
+          let newSavedQuotes = savedQuotes.filter((savedQuote) => {
+            return !savedQuote.id === savedQuoteId; //removes quote matching id
           });
           return {
             savedQuotes: newSavedQuotes
           }
-        })
+        });
       }
     })
+    .catch(err => console.error(err));
   }
   //END USER METHODS
 
@@ -326,11 +227,7 @@ class GlobalContextManager extends React.Component {
   
   //HELPER FUNCTIONS
   getBackgroundImages(numberOfImages = 30) {
-    return fetch(`https://api.unsplash.com/photos/random?count=${numberOfImages}`, {
-      headers: {
-        Authorization: `Client-ID ${process.env.REACT_APP_API_KEY}`
-      }
-    })
+    return FetchServices.getBackgroundImages(numberOfImages)
     .then(res => res.json())
     .then(resJson => {
       return new Promise((resolve) => {
@@ -409,23 +306,11 @@ class GlobalContextManager extends React.Component {
     }
   }
 
-  setCreateAccountError = (message) => {
-    this.setState({
-      createAccountError: message,
-    });
-  }
-
-  setSignInError = (message) => {
-    this.setState({
-      signInError: message
-    });
-  }
   //END HELPER FUNCTIONS
-
   render() {
     const globalContext = {
-      state: this.state,
-      methods: {
+      GlobalState: this.state,
+      GlobalMethods: {
         handleCheckboxCheck: this.handleCheckboxCheck,
         randomizeQuote: this.randomizeQuote,
         undoRandomizeQuote: this.undoRandomizeQuote,
@@ -437,8 +322,6 @@ class GlobalContextManager extends React.Component {
         getUpdatedSavedQuotes: this.getUpdatedSavedQuotes,
         deleteFavoritesItem: this.deleteFavoritesItem,
         toggleMenuIsOpen: this.toggleMenuIsOpen,
-        setCreateAccountError: this.setCreateAccountError,
-        setSignInError: this.setSignInError
       }
     }
   

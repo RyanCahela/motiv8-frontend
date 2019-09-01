@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { GlobalContext } from '../../contexts/GlobalContextManager';
 import LoadingSpinner from '../../components/Loading/LoadingSpinner';
+import { createAccount, checkIfAccountCreationError } from '../../services/UserServices';
+import { convertResToJson } from '../../services/FetchServices';
 
 export default class CreateAccountForm extends Component {
 
@@ -13,12 +15,6 @@ export default class CreateAccountForm extends Component {
       errorMessage: '',
       loading: false,
     }
-
-  }
-
-  componentWillUnmount() {
-    let { methods } = this.context;
-    methods.setCreateAccountError('');
   }
 
   handleTextInput(e) {
@@ -43,7 +39,7 @@ export default class CreateAccountForm extends Component {
     }
   }
 
-  handleSubmit(e, methods) {
+  handleSubmit(e) {
     e.preventDefault();
     let { password, passwordConfirm } = this.state
     if(password !== passwordConfirm) {
@@ -55,26 +51,41 @@ export default class CreateAccountForm extends Component {
     this.setState({
       loading: true,
     }, () => {
-      methods.createAccount(e, this.state, this);
+      let newUserInfo = {
+        username: this.state.username,
+        password: this.state.password,
+      }
+      createAccount(e, newUserInfo)
+        .then(convertResToJson)
+        .then(checkIfAccountCreationError)
+        .then(this.context.loginUser)
+        .catch(err => {
+          console.error(err);
+        });
     });
+  }
 
+  setCreateAccountError = (message) => {
+    this.setState({
+      errorMessage: message,
+    });
   }
 
   render() {
     return (
       <GlobalContext.Consumer>
-        {({ methods, state }) => {
+        {({ state }) => {
           return (
             <>
               <form 
                 className="create-account-form" 
                 onSubmit={(e) => {
-                  this.handleSubmit(e, methods);
+                  this.handleSubmit(e);
                 }}>
                 {this.state.loading
                 ? <LoadingSpinner />
                 : <>
-                  {state.createAccountError
+                  {this.state.errorMessage
                     ?<div className="error-message">{state.createAccountError}</div>
                     :undefined
                   }

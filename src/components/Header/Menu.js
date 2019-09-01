@@ -25,18 +25,18 @@ export default class Menu extends React.Component {
   render() {
     return (
       <GlobalContext.Consumer>
-        {({ state, methods }) => {
+        {({ GlobalState, GlobalMethods }) => {
             return (
               <div className="menu-container">
                 <header className="menu">
-                  <button className="menu__button" onClick={methods.toggleMenuIsOpen}>
-                    <span>{ state.menuIsOpen ? 'Close' : 'Menu' }</span>
+                  <button className="menu__button" onClick={GlobalMethods.toggleMenuIsOpen}>
+                    <span>{ GlobalState.menuIsOpen ? 'Close' : 'Menu' }</span>
                   </button>
                   <div className="menu__greeting">
-                    { state.userIsLoggedIn ? `Welcome ${state.username}`: ''}
+                    { GlobalState.userIsLoggedIn ? `Welcome ${GlobalState.username}`: ''}
                   </div>
-                    { state.menuIsOpen ? 
-                        state.userIsLoggedIn ? <UserMenu /> : <AccountAccessForms />
+                    { GlobalState.menuIsOpen ? 
+                        GlobalState.userIsLoggedIn ? <UserMenu /> : <AccountAccessForms />
                         :
                         ''
                     }

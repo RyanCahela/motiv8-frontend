@@ -5,27 +5,30 @@ import { GlobalContext } from '../../contexts/GlobalContextManager';
 export default function QuoteNav() {
   return (
     <GlobalContext.Consumer>
-      {({ methods, state }) => {
+      {({ GlobalState, GlobalMethods }) => {
 
-        let {
+        const {
           currentQuoteSaved,
           userIsLoggedIn,
           prevQuote,
           userId
-        } = state
+        } = GlobalState
 
-        let {
-          getUpdatedSavedQuotes
-        } = methods
+        const {
+          getUpdatedSavedQuotes,
+          randomizeQuote,
+          saveQuote,
+          undoRandomizeQuote,
+        } = GlobalMethods
 
 
         return (
           <div className="quote-nav-container">
-            <button className="quote-nav__button randomize-button" onClick={() => methods.randomizeQuote()}>Randomize</button>
+            <button className="quote-nav__button randomize-button" onClick={() => randomizeQuote()}>Randomize</button>
             <button
               disabled={prevQuote.quote ? false : 'disabled'}
               className={`quote-nav__button undo-button ${prevQuote.quote ? '' : 'button-disabled'}`} 
-              onClick={() => methods.undoRandomizeQuote()}>
+              onClick={() => undoRandomizeQuote()}>
                 Undo
             </button>
             <button 
@@ -35,7 +38,7 @@ export default function QuoteNav() {
                 ${currentQuoteSaved ? 'save-success' : ''}
                 ${userIsLoggedIn ? '' : 'button-disabled'}`
               } 
-              onClick={() => methods.saveQuote(userId, getUpdatedSavedQuotes)}
+              onClick={() => saveQuote(userId, getUpdatedSavedQuotes)}
               >
                 Save
               {userIsLoggedIn

@@ -1,9 +1,9 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Menu from '../components/Header/Menu';
-import LandingPage from '../pages/LandingPage';
-import QuoteEditorPage from '../pages/QuoteEditorPage';
-import UserProfilePage from '../pages/UserProfilePage';
+import LandingPage from '../components/LandingPage/LandingPage';
+import QuoteEditorPage from '../components/QuoteEditorPage/QuoteEditorPage';
+import UserProfilePage from '../components/UserProfilePage/UserProfilePage';
 import { GlobalContext } from '../contexts/GlobalContextManager';
 
 export default function Router(props) {
@@ -14,14 +14,17 @@ export default function Router(props) {
         <Route path="/" exact component={LandingPage} />
         <Route path="/quotes" component={QuoteEditorPage} />
         <GlobalContext.Consumer>
-          {({ state, methods }) => {
+          {({ GlobalState, GlobalMethods }) => {
+            const { getUpdatedSavedQuotes } = GlobalMethods;
+            const { userId } = GlobalState;
+
             return (
               <Route 
                 path="/user/:username" 
                 render={(props) => <UserProfilePage
                   {...props}
-                  getUpdatedSavedQuotes={methods.getUpdatedSavedQuotes}
-                  userId={state.userId}/>} 
+                  getUpdatedSavedQuotes={getUpdatedSavedQuotes}
+                  userId={userId}/>} 
                 />
             )
           }}
