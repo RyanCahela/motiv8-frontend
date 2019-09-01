@@ -59,7 +59,7 @@ const FetchServices = {
 }
 
 export function convertResToJson(res) {
-  return res.json();
+    return res.json();
 }
 
 export default FetchServices;

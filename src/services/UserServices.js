@@ -5,24 +5,26 @@ import jwt from 'jsonwebtoken';
 export function createAccount(newUserInfo) {
   return FetchServices.postNewUser(newUserInfo)
 }
+
 export function checkIfAccountCreationError(json) {
-  if(json.hasOwnProperty('error')) {
-    this.setState({
-      errorMessage: json.error,
-    });
+  if(json.error) {
+    throw json.error;
   }
   return json;
 }
+
 export function setLoginToken(res) {
   if(res.error) {
     throw res.error;
   }
   return TokenServices.setToken('motiv8-jwt', res.authToken);
 }
+
 export function fetchSavedQuotes() {
   let decodedToken = jwt.decode(TokenServices.getTokenByKey('motiv8-jwt'));
   return FetchServices.getSavedQuotesByUsername(decodedToken.sub);
 }
+
 export function finalizeLogin(savedQuotes) {
   let decodedToken = jwt.decode(TokenServices.getTokenByKey('motiv8-jwt'));
     this.setState({
@@ -33,6 +35,7 @@ export function finalizeLogin(savedQuotes) {
       menuIsOpen: false
     });
 }
+
 export function logoutUser() {
   TokenServices.removeTokenByKey('motiv8-jwt');
   this.setState({
@@ -43,10 +46,12 @@ export function logoutUser() {
     menuIsOpen: false
   });
 }
+
 const UserServices = {
   setLoginToken,
   fetchSavedQuotes,
   finalizeLogin,
   logoutUser
 }
+
 export default UserServices;

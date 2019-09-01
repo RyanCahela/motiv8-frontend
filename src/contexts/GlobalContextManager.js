@@ -179,12 +179,13 @@ class GlobalContextManager extends React.Component {
   //USER METHODS
 
   loginUser = (userInfo) => {
+    console.log('userInfo', userInfo);
     return FetchServices.postUserLogin(userInfo)
             .then(convertResToJson)
             .then(setLoginToken.bind(this))
             .then(fetchSavedQuotes)
             .then(convertResToJson)
-            .then(finalizeLogin.bind(this))
+            .then(finalizeLogin.bind(this));
   }
 
   logoutUser = () => logoutUser.call(this);
