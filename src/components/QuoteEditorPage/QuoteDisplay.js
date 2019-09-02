@@ -1,6 +1,6 @@
 import React from 'react';
 import { GlobalContext } from '../../contexts/GlobalContextManager';
-
+import LoadingSpinner from '../Loading/LoadingSpinner';
 export default class QuoteDisplay extends React.Component {
   state = {
     loading: false,
@@ -36,10 +36,13 @@ export default class QuoteDisplay extends React.Component {
 
           return (
             <div className="quote-display"style={dynamicBackgroundStyles}>
-              <div className="quote-backdrop">
-                <div className="quote-body" style={dynamicBodyFont}>{currentQuote.quote}</div>
-                <div className="quote-author" style={dynamicAuthorFont}>{currentQuote.author}</div>
-              </div>
+              {currentQuote.hasOwnProperty('quote')
+              ? <div className="quote-backdrop">
+                  <div className="quote-body" style={dynamicBodyFont}>{currentQuote.quote}</div>
+                  <div className="quote-author" style={dynamicAuthorFont}>{currentQuote.author}</div>
+                </div>
+              : <LoadingSpinner />
+              }
             </div>
           )
         }}

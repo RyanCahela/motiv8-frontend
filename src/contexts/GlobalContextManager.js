@@ -34,8 +34,6 @@ class GlobalContextManager extends React.Component {
       username: '',
       userId: 0,
       savedQuotes: [],
-
-      menuIsOpen: false,
     }
   }
 
