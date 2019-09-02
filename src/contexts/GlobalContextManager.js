@@ -65,7 +65,6 @@ class GlobalContextManager extends React.Component {
 
   //QUOTE 
   randomizeQuote = () => {
-    console.log('randomizeQuote ran');
     const {
       currentQuote,
       currentQuoteBgImageUrl,
@@ -74,8 +73,6 @@ class GlobalContextManager extends React.Component {
       keepFonts,
       keepQuote,
     } = this.state;
-
-    console.dir(this.state);
 
     this.setState({
       //resets save button
@@ -170,7 +167,6 @@ class GlobalContextManager extends React.Component {
 
   //USER METHODS
   loginUser = (userInfo, ) => {
-    console.log('userInfo', userInfo);
     return FetchServices.postUserLogin(userInfo)
             .then(convertResToJson)
             .then(setLoginToken.bind(this))
@@ -190,11 +186,13 @@ class GlobalContextManager extends React.Component {
   deleteFavoritesItem = (savedQuoteId) => {
     FetchServices.deleteSavedQuoteById(savedQuoteId)
     .then(res => {
-      if(res.ok) {
+      console.log('delete res', res);
+      if(res.status === 204) {
         this.setState(({ savedQuotes }) => {
           let newSavedQuotes = savedQuotes.filter((savedQuote) => {
-            return !savedQuote.id === savedQuoteId; //removes quote matching id
+            return !(savedQuote.id === savedQuoteId); //removes quote matching id
           });
+          console.log('newSavedQuotes', newSavedQuotes);
           return {
             savedQuotes: newSavedQuotes
           }
@@ -283,8 +281,6 @@ class GlobalContextManager extends React.Component {
   
   iterateBackgroundUrl(iterator) {
     const {value, done} = iterator.next();
-    console.log('iterateBG value', value);
-    console.log('iterateBG done', done);
     if(done) {
       //create new iterator when old one runs out
       this.getBackgroundImages(30)
@@ -296,8 +292,6 @@ class GlobalContextManager extends React.Component {
   
   iterateFontPairing = (iterator) => {
     const {value, done} = iterator.next();
-    console.log('iterateFont value', value);
-    console.log('iterateFont done', done);
     if(!done) {
       this.setState({ currentQuoteFontPair: value });
     }
@@ -311,8 +305,6 @@ class GlobalContextManager extends React.Component {
   
   iterateQuote = (iterator) => {
     const { value, done } = iterator.next();
-    console.log('iterateQuote value', value);
-    console.log('iterateQuote done', done);
     if(!done) {
       this.setState({currentQuote: value })
     }
