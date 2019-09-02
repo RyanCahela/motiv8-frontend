@@ -65,7 +65,6 @@ class GlobalContextManager extends React.Component {
 
   //QUOTE 
   randomizeQuote = () => {
-    console.log('randomizeQuote ran');
     const {
       currentQuote,
       currentQuoteBgImageUrl,
@@ -170,7 +169,6 @@ class GlobalContextManager extends React.Component {
 
   //USER METHODS
   loginUser = (userInfo, ) => {
-    console.log('userInfo', userInfo);
     return FetchServices.postUserLogin(userInfo)
             .then(convertResToJson)
             .then(setLoginToken.bind(this))
@@ -283,8 +281,6 @@ class GlobalContextManager extends React.Component {
   
   iterateBackgroundUrl(iterator) {
     const {value, done} = iterator.next();
-    console.log('iterateBG value', value);
-    console.log('iterateBG done', done);
     if(done) {
       //create new iterator when old one runs out
       this.getBackgroundImages(30)
@@ -296,8 +292,6 @@ class GlobalContextManager extends React.Component {
   
   iterateFontPairing = (iterator) => {
     const {value, done} = iterator.next();
-    console.log('iterateFont value', value);
-    console.log('iterateFont done', done);
     if(!done) {
       this.setState({ currentQuoteFontPair: value });
     }
@@ -310,9 +304,7 @@ class GlobalContextManager extends React.Component {
   }
   
   iterateQuote = (iterator) => {
-    const { value, done } = iterator.next();
-    console.log('iterateQuote value', value);
-    console.log('iterateQuote done', done);
+    const { value, done } = iterator.next()
     if(!done) {
       this.setState({currentQuote: value })
     }
