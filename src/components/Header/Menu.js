@@ -11,13 +11,12 @@ export default class Menu extends React.Component {
       menuIsOpen: false,
       userIsLoggedIn: true
     }
-    this.toggleMenuIsOpen = this.toggleMenuIsOpen.bind(this);
   }
 
-  toggleMenuIsOpen = () => {
+  setMenuIsOpen = (bool) => {
     this.setState((currentState) => {
       return {
-        menuIsOpen: !currentState.menuIsOpen
+        menuIsOpen: bool
       }
     })
   }
@@ -25,20 +24,24 @@ export default class Menu extends React.Component {
   render() {
     return (
       <GlobalContext.Consumer>
-        {({ GlobalState, GlobalMethods }) => {
+        {({ GlobalState }) => {
+
+          const { menuIsOpen } = this.state;
+
             return (
               <div className="menu-container">
                 <header className="menu">
-                  <button className="menu__button" onClick={this.toggleMenuIsOpen}>
-                    <span>{ this.state.menuIsOpen ? 'Close' : 'Menu' }</span>
+                  <button className="menu__button" onClick={() => this.setMenuIsOpen(!menuIsOpen)}>
+                    <span>{ menuIsOpen ? 'Close' : 'Menu' }</span>
                   </button>
                   <div className="menu__greeting">
                     { GlobalState.userIsLoggedIn ? `Welcome ${GlobalState.username}`: ''}
                   </div>
-                    { this.state.menuIsOpen ? 
-                        GlobalState.userIsLoggedIn ? <UserMenu /> : <AccountAccessForms />
-                        :
-                        ''
+                    { menuIsOpen 
+                      ? GlobalState.userIsLoggedIn 
+                        ? <UserMenu {...this.props} setMenuIsOpen={this.setMenuIsOpen}/> 
+                        : <AccountAccessForms {...this.props} setMenuIsOpen={this.setMenuIsOpen}/>
+                      : ''
                     }
                 </header>
               </div>

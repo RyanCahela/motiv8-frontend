@@ -27,13 +27,15 @@ export function fetchSavedQuotes() {
 
 export function finalizeLogin(savedQuotes) {
   let decodedToken = jwt.decode(TokenServices.getTokenByKey('motiv8-jwt'));
+  return new Promise((resolve) => {
     this.setState({
-      userIsLoggedIn: true,
-      username: decodedToken.sub,
-      userId: decodedToken.userId,
-      savedQuotes:savedQuotes,
-      menuIsOpen: false
-    });
+        userIsLoggedIn: true,
+        username: decodedToken.sub,
+        userId: decodedToken.userId,
+        savedQuotes:savedQuotes,
+        menuIsOpen: false
+      }, resolve);
+  })  
 }
 
 export function logoutUser() {

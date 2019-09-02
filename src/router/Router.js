@@ -9,7 +9,7 @@ import { GlobalContext } from '../contexts/GlobalContextManager';
 export default function Router(props) {
   return (
     <BrowserRouter>
-      <Menu />
+      <Route path="/" component={Menu} />
       <Switch>
         <Route path="/" exact component={LandingPage} />
         <Route path="/quotes" component={QuoteEditorPage} />

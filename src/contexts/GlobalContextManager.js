@@ -169,7 +169,7 @@ class GlobalContextManager extends React.Component {
   //END QUOTE METHODS
 
   //USER METHODS
-  loginUser = (userInfo) => {
+  loginUser = (userInfo, ) => {
     console.log('userInfo', userInfo);
     return FetchServices.postUserLogin(userInfo)
             .then(convertResToJson)

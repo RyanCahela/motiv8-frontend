@@ -53,6 +53,8 @@ export default class LoginForm extends Component {
       username: this.state.username,
       password: this.state.password
     })
+    .then(() => this.props.history.push('/quotes'))
+    .then(() => this.props.setMenuIsOpen(false))
     .catch(err => {
       console.log('catch err', err);
       this.setErrorMessage(err);

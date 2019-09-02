@@ -31,9 +31,9 @@ export default class AccountAccessForms extends React.Component {
         </button>
         <div className="account-access-forms__selected-form">
           {this.state.inCreateAccountMode ? 
-            <CreateAccountForm setInCreateAccountMode={this.setInCreateAccountMode}/>
+            <CreateAccountForm setInCreateAccountMode={this.setInCreateAccountMode} {...this.props}/>
             :
-            <LoginForm />}
+            <LoginForm {...this.props} setMenuIsOpen={this.props.setMenuIsOpen}/>}
         </div>
       </div>
     )

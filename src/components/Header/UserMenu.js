@@ -2,7 +2,6 @@ import React from 'react'
 import { NavLink } from 'react-router-dom';
 import { GlobalContext } from '../../contexts/GlobalContextManager';
 
-
 export default function UserMenu(props) {
 
   return (
@@ -13,7 +12,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={`/user/${GlobalState.username}`} 
-                onClick={() => GlobalMethods.toggleMenuIsOpen()}
+                onClick={GlobalMethods.toggleMenuIsOpen}
               >
                 <li className="user-menu__list-item">
                   Profile
@@ -22,7 +21,7 @@ export default function UserMenu(props) {
               <NavLink 
                 className="user-menu__list-item__link" 
                 to={'/quotes'} 
-                onClick={() => GlobalMethods.toggleMenuIsOpen()}
+                onClick={GlobalMethods.toggleMenuIsOpen}
               >
                 <li className="user-menu__list-item">
                   Quote Generator
@@ -30,8 +29,11 @@ export default function UserMenu(props) {
               </NavLink>
               <NavLink 
                 className="user-menu__list-item__link" 
-                to={'/quotes'} 
-                onClick={() => GlobalMethods.logoutUser()}
+                to={'/'} 
+                onClick={() => {
+                  GlobalMethods.logoutUser();
+                  props.setMenuIsOpen(false);
+                }}
               >
                 <li className="user-menu__list-item">
                   Log Out
@@ -43,3 +45,5 @@ export default function UserMenu(props) {
     </GlobalContext.Consumer>
   )
 }
+
+UserMenu.contextType = GlobalContext;
