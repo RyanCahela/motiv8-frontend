@@ -33,7 +33,6 @@ export default class LoginForm extends Component {
   }
 
   setErrorMessage = (message) => {
-    console.log('message', message);
     this.setState({
       errorMessage: message
     });
@@ -56,7 +55,6 @@ export default class LoginForm extends Component {
     .then(() => this.props.history.push('/quotes'))
     .then(() => this.props.setMenuIsOpen(false))
     .catch(err => {
-      console.log('catch err', err);
       this.setErrorMessage(err);
     });
   }
