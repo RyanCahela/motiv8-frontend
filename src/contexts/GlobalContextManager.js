@@ -304,7 +304,7 @@ class GlobalContextManager extends React.Component {
   }
   
   iterateQuote = (iterator) => {
-    const { value, done } = iterator.next()
+    const { value, done } = iterator.next();
     if(!done) {
       this.setState({currentQuote: value })
     }
