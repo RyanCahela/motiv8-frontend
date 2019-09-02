@@ -63,6 +63,8 @@ export default class CreateAccountForm extends Component {
         .then(convertResToJson)
         .then(checkIfAccountCreationError)
         .then(({ username }) => GlobalMethods.loginUser({ username, password }))
+        .then(() => this.props.setMenuIsOpen(false))
+        .then(() => this.props.history.push('/quotes'))
         .then(() => this.setIsLoading(false))
         .catch(this.setCreateAccountError);
     });
