@@ -3,6 +3,11 @@ import { GlobalContext } from '../../contexts/GlobalContextManager';
 
 
 export default function QuoteNav() {
+
+  function isEmpty(quoteHistory) {
+    return quoteHistory.length > 1;
+  }
+
   return (
     <GlobalContext.Consumer>
       {({ GlobalState, GlobalMethods }) => {
@@ -25,8 +30,8 @@ export default function QuoteNav() {
           <div className="quote-nav-container">
             <button className="quote-nav__button randomize-button" onClick={() => randomizeQuote()}>Randomize</button>
             <button
-              disabled={quoteHistory.length ? false : 'disabled'}
-              className={`quote-nav__button undo-button ${quoteHistory.length ? '' : 'button-disabled'}`} 
+              disabled={isEmpty(quoteHistory) ? false : 'disabled'}
+              className={`quote-nav__button undo-button ${isEmpty(quoteHistory) ? '' : 'button-disabled'}`} 
               onClick={() => undoRandomizeQuote()}>
                 Undo
             </button>

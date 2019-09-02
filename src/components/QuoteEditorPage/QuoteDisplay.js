@@ -6,9 +6,6 @@ export default class QuoteDisplay extends React.Component {
     loading: false,
   }
 
-  componentDidMount() {
-  }
-
   render() {
     return (
       <GlobalContext.Consumer>
