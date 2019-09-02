@@ -10,24 +10,23 @@ export default function QuoteNav() {
         const {
           currentQuoteSaved,
           userIsLoggedIn,
-          prevQuote,
+          quoteHistory,
           userId
-        } = GlobalState
+        } = GlobalState;
 
         const {
           getUpdatedSavedQuotes,
           randomizeQuote,
           saveQuote,
           undoRandomizeQuote,
-        } = GlobalMethods
-
-
+        } = GlobalMethods;
+        
         return (
           <div className="quote-nav-container">
             <button className="quote-nav__button randomize-button" onClick={() => randomizeQuote()}>Randomize</button>
             <button
-              disabled={prevQuote.quote ? false : 'disabled'}
-              className={`quote-nav__button undo-button ${prevQuote.quote ? '' : 'button-disabled'}`} 
+              disabled={quoteHistory.length ? false : 'disabled'}
+              className={`quote-nav__button undo-button ${quoteHistory.length ? '' : 'button-disabled'}`} 
               onClick={() => undoRandomizeQuote()}>
                 Undo
             </button>

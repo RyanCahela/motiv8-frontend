@@ -24,9 +24,6 @@ class GlobalContextManager extends React.Component {
       currentQuoteFontPair: {},
       currentQuoteSaved: false,
 
-      prevQuote: {},
-      prevQuoteBgImageUrl: '',
-      prevQuoteFontPair: {},
       quoteHistory: [],
 
       keepQuoteBackground: false,
@@ -72,69 +69,44 @@ class GlobalContextManager extends React.Component {
   randomizeQuote = () => {
     console.log('randomizeQuote ran');
     const {
-      backgroundUrlIterator,
-      quoteIterator,
-      fontIterator,
       currentQuote,
-      quoteBgImageUrl,
+      currentQuoteBgImageUrl,
       currentQuoteFontPair,
       keepBackground,
       keepFonts,
       keepQuote,
     } = this.state;
 
+    console.dir(this.state);
+
     this.setState({
       //resets save button
       currentQuoteSaved: false
-    })
+    });
 
     let currentQuoteConfig = {
       quote: currentQuote,
-      quoteBgImageUrl: quoteBgImageUrl,
+      quoteBgImageUrl: currentQuoteBgImageUrl,
       quoteFontPair: currentQuoteFontPair,
-    }
+    };
 
     this.pushToHistory(currentQuoteConfig)
       .then(() => {
         if(!keepBackground) {
-          this.iterateBackgroundUrl(backgroundUrlIterator);
+          this.iterateBackgroundUrl(this.backgroundUrlIterator);
         }
         if(!keepFonts) {
-          this.iterateFontPairing(fontIterator);
+          this.iterateFontPairing(this.fontIterator);
         }
         if(!keepQuote) {
-          this.iterateQuote(quoteIterator);
+          this.iterateQuote(this.quoteIterator);
         }
       });
   }
   
   undoRandomizeQuote = () => {
-    if(!this.state.keepBackground) {
-      this.setState((currentState) => {
-        return {
-          currentQuoteBgImageUrl: currentState.prevQuoteBgImageUrl,
-          prevQuoteBgImageUrl: currentState.currentQuoteBgImageUrl
-        }
-      });
-    }
-
-    if(!this.state.keepFonts) {
-      this.setState((currentState) => {
-        return {
-          fontPair: currentState.previousFontPair,
-          prevFontPair: currentState.fontPair
-        }
-      });
-    }
-
-    if(!this.state.keepQuote) {
-      this.setState((currentState) => {
-        return {
-          currentQuote: currentState.prevQuote,
-          prevQuote: currentState.currentQuote
-        }
-      })
-    }
+    const prevQuote = this.state.quoteHistory.pop();
+    this.setCurrentQuote(prevQuote);
   }
 
   saveQuote = (userId, getUpdatedSavedQuotes) => {
@@ -246,25 +218,36 @@ class GlobalContextManager extends React.Component {
   //HELPER FUNCTIONS
   setBackgroundUrlIterator = (iterator) => {
     return new Promise((resolve) => {
-      this.setState({ backgroundUrlIterator: iterator }, resolve);
+      this.backgroundUrlIterator = iterator;
+      resolve();
     });
   }
 
   setQuoteIterator = (iterator) => {
     return new Promise((resolve) => {
-      this.setState({ quoteIterator: iterator }, resolve);
+      this.quoteIterator = iterator;
+      resolve();
     });
   }
 
   setFontIterator = (iterator) => {
     return new Promise((resolve) => {
-      this.setState({ fontIterator: iterator}, resolve(this.state.fontIterator));
+      this.fontIterator = iterator;
+      resolve(this.fontIterator);
     });
   }
 
   setUpdatedSavedQuotes = (json) => {
     return new Promise((resolve) => {
       this.setState({ savedQuotes: json }, resolve);
+    });
+  }
+
+  setCurrentQuote = (obj) => {
+    this.setState({
+      currentQuote: obj.quote,
+      currentQuoteBgImageUrl: obj.quoteBgImageUrl,
+      currentQuoteFontPair: obj.quoteFontPair,
     });
   }
 
@@ -302,17 +285,21 @@ class GlobalContextManager extends React.Component {
   
   iterateBackgroundUrl(iterator) {
     const {value, done} = iterator.next();
-    if(!done) {
-      this.setState({ currentQuoteBgImageUrl: value.urls.regular });
-    }
-    else {
+    console.log('iterateBG value', value);
+    console.log('iterateBG done', done);
+    if(done) {
       //create new iterator when old one runs out
       this.getBackgroundImages(30)
+    }
+    else {
+      this.setState({ currentQuoteBgImageUrl: value.urls.regular });
     }
   }
   
   iterateFontPairing = (iterator) => {
     const {value, done} = iterator.next();
+    console.log('iterateFont value', value);
+    console.log('iterateFont done', done);
     if(!done) {
       this.setState({ currentQuoteFontPair: value });
     }
@@ -326,6 +313,8 @@ class GlobalContextManager extends React.Component {
   
   iterateQuote = (iterator) => {
     const { value, done } = iterator.next();
+    console.log('iterateQuote value', value);
+    console.log('iterateQuote done', done);
     if(!done) {
       this.setState({currentQuote: value })
     }
@@ -343,7 +332,6 @@ class GlobalContextManager extends React.Component {
         randomizeQuote: this.randomizeQuote,
         undoRandomizeQuote: this.undoRandomizeQuote,
         saveQuote: this.saveQuote,
-        editFavoritesItem: this.editFavoritesItem,
         createAccount: this.createAccount,
         loginUser: this.loginUser,
         logoutUser: this.logoutUser,
