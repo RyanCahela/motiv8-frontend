@@ -74,8 +74,6 @@ class GlobalContextManager extends React.Component {
       keepQuote,
     } = this.state;
 
-    console.dir(this.state);
-
     this.setState({
       //resets save button
       currentQuoteSaved: false
@@ -188,11 +186,13 @@ class GlobalContextManager extends React.Component {
   deleteFavoritesItem = (savedQuoteId) => {
     FetchServices.deleteSavedQuoteById(savedQuoteId)
     .then(res => {
-      if(res.ok) {
+      console.log('delete res', res);
+      if(res.status === 204) {
         this.setState(({ savedQuotes }) => {
           let newSavedQuotes = savedQuotes.filter((savedQuote) => {
-            return !savedQuote.id === savedQuoteId; //removes quote matching id
+            return !(savedQuote.id === savedQuoteId); //removes quote matching id
           });
+          console.log('newSavedQuotes', newSavedQuotes);
           return {
             savedQuotes: newSavedQuotes
           }

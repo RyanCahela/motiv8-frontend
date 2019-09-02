@@ -44,13 +44,13 @@ const FetchServices = {
     });
   },
   deleteSavedQuoteById(id) {
-    fetch(`${API_BASE_URL}/savedQuotes/`, {
+    return fetch(`${API_BASE_URL}/savedQuotes/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${TokenServices.getTokenByKey('motiv8-jwt')}`
       },
-      body: JSON.stringify(id)
+      body: JSON.stringify({"savedQuoteId": id})
     });
   },
   convertResToJson(res) {
