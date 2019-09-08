@@ -54,7 +54,7 @@ export default class CreateAccountForm extends Component {
     }, () => {
       //Create Account
       let newUserInfo = {
-        username: this.state.username,
+        username: this.state.username.toLowerCase(),
         password: this.state.password,
       }
 
