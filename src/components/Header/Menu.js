@@ -20,14 +20,18 @@ export default class Menu extends React.Component {
       }
     })
   }
+
+  capitalizeFirstLetter(string) {
+    if(!typeof string === 'string') throw new Error('argument must be a string');
+    let firstLetter = string.charAt(0).toUpperCase();
+    return firstLetter + string.slice(1, string.length);
+  }
   
   render() {
     return (
       <GlobalContext.Consumer>
         {({ GlobalState }) => {
-
           const { menuIsOpen } = this.state;
-
             return (
               <div className="menu-container">
                 <header className="menu">
@@ -35,7 +39,7 @@ export default class Menu extends React.Component {
                     <span>{ menuIsOpen ? 'Close' : 'Menu' }</span>
                   </button>
                   <div className="menu__greeting">
-                    { GlobalState.userIsLoggedIn ? `Welcome ${GlobalState.username}`: ''}
+                    { GlobalState.userIsLoggedIn ? `Welcome ${this.capitalizeFirstLetter(GlobalState.username)}`: ''}
                   </div>
                     { menuIsOpen 
                       ? GlobalState.userIsLoggedIn 

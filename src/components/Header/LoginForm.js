@@ -49,7 +49,7 @@ export default class LoginForm extends Component {
     }
 
     GlobalMethods.loginUser({
-      username: this.state.username,
+      username: this.state.username.toLowerCase(),
       password: this.state.password
     })
     .then(() => this.props.history.push('/quotes'))
